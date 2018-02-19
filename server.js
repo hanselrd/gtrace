@@ -1,8 +1,10 @@
 const express = require('express');
+const pg = require('pg');
 const port = process.env.PORT || 4000;
+
 const app = express();
 
-app.get('*', (req, res, next) => {
+app.get('*', (req, res) => {
   res.send({ message: 'Trace' });
 });
 
