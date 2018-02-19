@@ -1,13 +1,16 @@
 const express = require('express');
-const pg = require('pg');
 const port = process.env.PORT || 4000;
+const models = require('./models');
 
 const app = express();
 
-app.get('*', (req, res) => {
-  res.send({ message: 'Trace' });
+app.get('*', async (req, res) => {
+  const user = await models.User.findOne({ where: { id: 1 }, raw: true });
+  res.send({ message: 'Trace', user });
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+models.sequelize.sync({ force: false }).then(() => {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
 });
