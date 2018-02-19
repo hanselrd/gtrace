@@ -42,6 +42,16 @@ module.exports = (sequelize, DataTypes) => {
             msg: 'Password cannot be empty'
           }
         }
+      },
+      language: {
+        type: DataTypes.STRING,
+        defaultValue: 'en',
+        validate: {
+          isIn: {
+            args: [['en', 'es']],
+            msg: 'Language must be English or Spanish'
+          }
+        }
       }
     },
     {
