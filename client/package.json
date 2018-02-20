@@ -20,7 +20,9 @@
     "redux": "^3.7.2",
     "redux-act": "^1.7.2",
     "redux-act-async": "^1.7.0",
+    "redux-devtools-extension": "^2.13.2",
     "redux-form": "^7.2.3",
+    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.2.14",
     "semantic-ui-react": "^0.78.2"
@@ -30,9 +32,5 @@
     "build": "export GENERATE_SOURCEMAP=false && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  },
-  "devDependencies": {
-    "redux-devtools-extension": "^2.13.2",
-    "redux-logger": "^3.0.6"
   }
 }
