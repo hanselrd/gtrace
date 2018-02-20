@@ -16,5 +16,6 @@ module.exports = `
   type Mutation {
     login(email: String!, password: String!): Response!
     register(username: String!, email: String!, password: String!, language: String = "en"): Response!
+    changePassword(oldPassword: String!, newPassword: String!): Response!
   }
 `;

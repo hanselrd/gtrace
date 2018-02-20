@@ -37,7 +37,7 @@ app.use(async (req, res, next) => {
         return next();
       }
       const { sub } = decoded;
-      const user = await models.User.findOne({ where: { id: sub }, raw: true });
+      const user = await models.User.findOne({ where: { id: sub } });
       jwt.verify(token, user.password + process.env.SECRET);
       req.user = user;
     } catch (err) {

@@ -33,7 +33,7 @@ module.exports = {
   },
   Mutation: {
     login: async (parent, { email, password }, { models }) => {
-      const user = await models.User.findOne({ where: { email }, raw: true });
+      const user = await models.User.findOne({ where: { email } });
       if (!user) {
         return {
           status: false,
@@ -74,10 +74,75 @@ module.exports = {
           status: true
         };
       } catch (err) {
-        console.error(err);
         return {
           status: false,
           errors: formatErrors(err, models)
+        };
+      }
+    },
+    changePassword: async (
+      parent,
+      { oldPassword, newPassword },
+      { models, user }
+    ) => {
+      if (user) {
+        const valid = await bcrypt.compare(oldPassword, user.password);
+        if (!valid) {
+          return {
+            status: false,
+            errors: [{ path: 'oldPassword', message: 'Password is incorrect' }]
+          };
+        }
+
+        if (oldPassword === newPassword) {
+          return {
+            status: false,
+            errors: [
+              {
+                path: 'newPasword',
+                message: 'New password cannot match old password'
+              }
+            ]
+          };
+        }
+
+        try {
+          await models.User.update(
+            { password: newPassword },
+            { where: { id: user.id } }
+          );
+
+          const updatedUser = await models.User.findOne({
+            where: { id: user.id }
+          });
+
+          const token = jwt.sign(
+            {
+              sub: user.id,
+              iss: 'Trace'
+            },
+            updatedUser.password + process.env.SECRET,
+            {
+              expiresIn: '7d'
+            }
+          );
+
+          return {
+            status: true,
+            payload: {
+              token
+            }
+          };
+        } catch (err) {
+          return {
+            status: false,
+            errors: formatErrors(err, models)
+          };
+        }
+      } else {
+        return {
+          status: false,
+          errors: [{ path: 'auth', message: 'Invalid token' }]
         };
       }
     }
