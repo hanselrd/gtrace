@@ -1,23 +1,10 @@
 import { createReducer } from 'redux-act';
-import { createReducerAsync } from 'redux-act-async';
-import { combineReducers } from 'redux';
-import {
-  authTokenFound,
-  authTokenNotFound,
-  authSetToken,
-  authUnsetToken
-} from '../actions/auth';
+import { _authTokenFound, _authTokenNotFound } from '../actions/auth';
 
-const userReducer = createReducer(
+export default createReducer(
   {
-    [authTokenFound]: (state, payload) => payload,
-    [authTokenNotFound]: state => null
+    [_authTokenFound]: (state, payload) => payload,
+    [_authTokenNotFound]: state => null
   },
   null
 );
-
-export default combineReducers({
-  user: userReducer,
-  setToken: createReducerAsync(authSetToken),
-  unsetToken: createReducerAsync(authUnsetToken)
-});

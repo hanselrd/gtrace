@@ -8,7 +8,8 @@ import Routes from './Routes';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.props.authSearchForTokenInLocalStorage();
+    this.props.authStart();
+    this.props.localeStart();
   }
 
   render() {
@@ -17,6 +18,9 @@ class App extends Component {
         <ul>
           <li>
             <NavLink to="/">Home</NavLink>
+          </li>
+          <li>
+            <NavLink to="/login">Login</NavLink>
           </li>
         </ul>
         <Routes />

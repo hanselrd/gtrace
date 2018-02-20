@@ -6,7 +6,7 @@ import { mapStateToProps, mapDispatchToProps } from '../utils';
 class AuthRoute extends Component {
   render() {
     const { auth } = this.props;
-    return auth.user ? <Route {...this.props} /> : <Redirect to="/login" />;
+    return auth ? <Route {...this.props} /> : <Redirect to="/login" />;
   }
 }
 
