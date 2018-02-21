@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
+import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { mapStateToProps, mapDispatchToProps } from '../../utils';
 import { graphql, withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
-import locales from '../../locales';
+// import locales from '../../locales';
 
 class Home extends Component {
-  componentDidMount() {
-    this.props.data.refetch();
-  }
-
   render() {
-    const { data: { loading, users, currentUser } } = this.props;
+    const { data: { loading, users } } = this.props;
     return (
       <div className="Home">
         <Button
@@ -28,15 +25,12 @@ class Home extends Component {
         {!loading &&
           users &&
           users.map(user => {
-            return <p key={user.id}>{user.email}</p>;
+            return (
+              <p key={user.id}>
+                <NavLink to={'/profile/' + user.id}>{user.email}</NavLink>
+              </p>
+            );
           })}
-        {!loading &&
-          currentUser && (
-            <p>
-              ID: {currentUser.id} {locales.home.email}: {currentUser.email}
-            </p>
-          )}
-        {!loading && !users && <p>The server may be offline</p>}
       </div>
     );
   }
@@ -48,13 +42,11 @@ const usersQuery = gql`
       id
       email
     }
-    currentUser {
-      id
-      email
-    }
   }
 `;
 
 export default withApollo(
-  graphql(usersQuery)(connect(mapStateToProps, mapDispatchToProps)(Home))
+  graphql(usersQuery, {
+    options: { pollInterval: 5000 }
+  })(connect(mapStateToProps, mapDispatchToProps)(Home))
 );

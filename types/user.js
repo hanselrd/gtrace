@@ -7,8 +7,8 @@ module.exports = `
   }
 
   type Query {
-    user(id: Int!): User!
-    users: [User!]!
+    user(id: Int!): User
+    users: [User!]
     currentUser: User
     refreshToken: String
   }
