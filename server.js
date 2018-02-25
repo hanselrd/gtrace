@@ -1,34 +1,25 @@
+const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const express = require('express');
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
-const GraphQLJSON = require('graphql-type-json');
-const jwt = require('jsonwebtoken');
-const { makeExecutableSchema } = require('graphql-tools');
-const {
-  fileLoader,
-  mergeTypes,
-  mergeResolvers
-} = require('merge-graphql-schemas');
-const models = require('./models');
 const morgan = require('morgan');
+const http = require('http');
 const path = require('path');
-
-const typeDefs = mergeTypes(
-  fileLoader(path.join(__dirname, 'types')).concat('scalar JSON')
-);
-const resolvers = mergeResolvers(
-  fileLoader(path.join(__dirname, 'resolvers')).concat({ JSON: GraphQLJSON })
-);
-const schema = makeExecutableSchema({ typeDefs, resolvers });
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
+const { execute, subscribe } = require('graphql');
+const { SubscriptionServer } = require('subscriptions-transport-ws');
+const jwt = require('jsonwebtoken'); // refactor
+const models = require('./models');
+const schema = require('./schema');
 
 const app = express();
+const port = process.env.PORT || 5000;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+
 app.use(morgan('dev'));
+
 app.use(async (req, res, next) => {
+  // move this logic to its own file
   const token = req.headers['x-token'];
   if (token) {
     try {
@@ -37,7 +28,7 @@ app.use(async (req, res, next) => {
         return next();
       }
       const { sub } = decoded;
-      const user = await models.User.findOne({ where: { id: sub } });
+      const user = await models.User.findById(sub);
       jwt.verify(token, user.password + process.env.SECRET);
       req.user = user;
     } catch (err) {
@@ -47,8 +38,10 @@ app.use(async (req, res, next) => {
   }
   return next();
 });
+
 app.use(
   '/graphql',
+  bodyParser.json(),
   graphqlExpress(req => ({
     schema,
     context: {
@@ -57,7 +50,17 @@ app.use(
     }
   }))
 );
-app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(
+    '/graphiql',
+    graphiqlExpress({
+      endpointURL: '/graphql',
+      subscriptionsEndpoint: `ws://localhost:${port}/subscriptions`
+    })
+  );
+}
+
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('*', (req, res) => {
@@ -65,7 +68,44 @@ app.get('*', (req, res) => {
 });
 
 models.sequelize.sync({ force: false }).then(() => {
-  const server = app.listen(process.env.PORT || 4000, () => {
-    console.log(`Server running on port ${server.address().port}`);
+  const wss = http.createServer(app);
+  wss.listen(port, () => {
+    new SubscriptionServer(
+      {
+        execute,
+        subscribe,
+        schema,
+        // websocket server is only for auth users hence the Error if no token
+        // unlike http server which is accessible by guest or auth users
+        onConnect: async (connectionParams, webSocket) => {
+          // refactor this too,
+          // combine with function used to auth http
+          const token = webSocket.upgradeReq.headers['x-token'];
+          if (token) {
+            try {
+              const decoded = jwt.decode(token);
+              if (!decoded) {
+                throw new Error('Token is malformed');
+              }
+              const { sub } = decoded;
+              const user = await models.User.findById(sub);
+              jwt.verify(token, user.password + process.env.SECRET);
+              return { user };
+            } catch (err) {
+              console.error(err);
+              throw new Error(err.message);
+            }
+          }
+          // do not allow guest users to access ws server
+          throw new Error('Missing auth token');
+        }
+      },
+      {
+        server: wss,
+        path: '/subscriptions'
+      }
+    );
+
+    console.log(`Server running on port ${port}`);
   });
 });

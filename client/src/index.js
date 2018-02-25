@@ -12,9 +12,17 @@ import { Provider } from 'react-redux';
 import store from './store';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-const httpLink = createHttpLink({
-  uri: 'https://traceapp.herokuapp.com/graphql'
-});
+let httpLink = null;
+
+if (process.env.NODE_ENV === 'development') {
+  httpLink = createHttpLink({
+    uri: 'http://localhost:5000/graphql'
+  });
+} else if (process.env.NODE_ENV === 'production') {
+  httpLink = createHttpLink({
+    uri: 'https://traceapp.herokuapp.com/graphql'
+  });
+}
 
 const authLink = setContext((_, { headers }) => {
   return {

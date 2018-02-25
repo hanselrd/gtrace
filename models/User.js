@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       username: {
         type: DataTypes.STRING,
+        allowNull: false,
         unique: {
           args: true,
           msg: 'Username is already in use'
@@ -23,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       email: {
         type: DataTypes.STRING,
+        allowNull: false,
         unique: {
           args: true,
           msg: 'Email is already in use'
@@ -36,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       password: {
         type: DataTypes.STRING,
+        allowNull: false,
         validate: {
           notEmpty: {
             args: true,
@@ -45,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       language: {
         type: DataTypes.STRING,
+        allowNull: false,
         defaultValue: 'en',
         validate: {
           isIn: {
@@ -56,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       hooks: {
-        afterValidate: async user => {
+        beforeCreate: async user => {
           user.password = await bcrypt.hash(user.password, 15);
         }
       }

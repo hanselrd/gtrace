@@ -1,11 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { withFilter } = require('graphql-subscriptions');
 const { formatErrors } = require('../utils');
+const pubsub = require('../pubsub');
 
 module.exports = {
   Query: {
-    user: (parent, { id }, { models }) =>
-      models.User.findOne({ where: { id } }),
+    user: (parent, { id }, { models }) => models.User.findById(id),
     users: (parent, args, { models }) => models.User.findAll(),
     currentUser: (parent, args, { models, user }) => {
       if (user) {
@@ -70,6 +71,9 @@ module.exports = {
     register: async (parent, args, { models }) => {
       try {
         const user = await models.User.create(args);
+
+        pubsub.publish('newUser', { newUser: user });
+
         return {
           status: true
         };
@@ -146,5 +150,20 @@ module.exports = {
         };
       }
     }
+  },
+  Subscription: {
+    newUser: {
+      // must have valid token to see new users as they register
+      // because onConnect throws an error for missing token
+      subscribe: () => pubsub.asyncIterator('newUser')
+    }
+    // newFriend: {
+    //   subscribe: withFilter(
+    //     () => pubsub.asyncIterator('newFriend'),
+    //     (parent, args, { user }) => {
+    //       return parent.newFriend.id === user.id;
+    //     }
+    //   )
+    // }
   }
 };
