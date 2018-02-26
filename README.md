@@ -98,13 +98,13 @@ Provision a `PostgreSQL` database by running
 $ heroku addons:create heroku-postgresql:hobby-dev
 ```
 
-Deploy your copy of *Trace* using
+Deploy your copy of the app using
 
 ```sh
 $ git push heroku master
 ```
 
-Ensure at least one instance of the *Trace* is running
+Ensure at least one instance of the app is running
 
 ```sh
 $ heroku ps:scale web=1
