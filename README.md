@@ -86,17 +86,34 @@ This will start up the server on [http://localhost:5000](http://localhost:5000) 
 
 ### Heroku
 
+First, create a heroku app by using the following
+
 ```sh
-$ heroku
+$ heroku create
 ```
 
-## Development setup
-
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
+Provision a `PostgreSQL` database by running
 
 ```sh
-$ make install
-$ npm test
+$ heroku addons:create heroku-postgresql:hobby-dev
+```
+
+Deploy your copy of *Trace* using
+
+```sh
+$ git push heroku master
+```
+
+Ensure at least one instance of the *Trace* is running
+
+```sh
+$ heroku ps:scale web=1
+```
+
+Lastly, open it in your browser using
+
+```sh
+$ heroku open
 ```
 
 ## Contributors
@@ -104,3 +121,27 @@ $ npm test
 - [Hansel De La Cruz](https://github.com/hanselrd)
 - [Devin Congdon](https://github.com/DevinCongdon)
 - [Daniel Shapiro](https://github.com/DS2000g)
+
+## License
+
+MIT License
+
+Copyright (c) 2018 Hansel De La Cruz
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
