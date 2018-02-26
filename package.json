@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "heroku local",
+    "start": "export NODE_ENV='development' SECRET='secret' && node .",
+    "heroku:local": "heroku local",
     "build:client": "cd client && npm run build",
     "build": "npm run build:client",
     "postinstall": "cd client && npm install && npm run build",
