@@ -14,6 +14,7 @@ module.exports = `
     user(id: Int!): User
     currentUser: User
     newToken: String
+    onlineUsers: [User!]
   }
 
   type Mutation {

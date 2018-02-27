@@ -25,7 +25,12 @@ module.exports = {
       } else {
         return null;
       }
-    }
+    },
+    onlineUsers: (parent, args, { models }) =>
+      models.User.findAll({
+        where: { online: true },
+        include: [models.Message, models.Role]
+      })
   },
   Mutation: {
     login: async (parent, { email, password }, { models }) => {
