@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "export NODE_ENV='development' SECRET='secret' && node .",
+    "start": "export NODE_ENV='development' SECRET='secret' && node server.js",
     "heroku:local": "heroku local",
     "build:client": "cd client && npm run build",
     "build": "npm run build:client",

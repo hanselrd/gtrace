@@ -8,8 +8,9 @@ const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const { execute, subscribe } = require('graphql');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
 const jwt = require('jsonwebtoken'); // refactor
-const models = require('./models');
 const schema = require('./schema');
+const models = require('./models');
+const seeders = require('./seeders');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -28,7 +29,10 @@ app.use(async (req, res, next) => {
         return next();
       }
       const { sub } = decoded;
-      const user = await models.User.findById(sub);
+      const user = await models.User.findOne({
+        where: { id: sub },
+        include: [models.Message, models.Role]
+      });
       jwt.verify(token, user.password + process.env.SECRET);
       req.user = user;
     } catch (err) {
@@ -67,7 +71,11 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
-models.sequelize.sync({ force: false }).then(() => {
+models.sequelize.sync({ force: false }).then(async () => {
+  if ((await models.Role.findAll({ raw: true })).length === 0) {
+    await seeders();
+  }
+
   const wss = http.createServer(app);
   wss.listen(port, () => {
     new SubscriptionServer(
@@ -80,7 +88,8 @@ models.sequelize.sync({ force: false }).then(() => {
         onConnect: async (connectionParams, webSocket) => {
           // refactor this too,
           // combine with function used to auth http
-          const token = webSocket.upgradeReq.headers['x-token'];
+          // const token = webSocket.upgradeReq.headers['x-token'];
+          const { token } = connectionParams;
           if (token) {
             try {
               const decoded = jwt.decode(token);
@@ -88,7 +97,10 @@ models.sequelize.sync({ force: false }).then(() => {
                 throw new Error('Token is malformed');
               }
               const { sub } = decoded;
-              const user = await models.User.findById(sub);
+              const user = await models.User.findOne({
+                where: { id: sub },
+                include: [models.Message, models.Role]
+              });
               jwt.verify(token, user.password + process.env.SECRET);
               return { user };
             } catch (err) {

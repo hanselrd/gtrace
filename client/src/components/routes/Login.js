@@ -3,8 +3,7 @@ import { Button, Container, Form, Input, Header } from 'semantic-ui-react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import { mapStateToProps, mapDispatchToProps } from '../../utils';
-import { currentUserQuery } from '../App';
-import { graphql } from 'react-apollo';
+import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const required = value => (value ? undefined : 'Required');
@@ -33,14 +32,14 @@ class renderField extends Component {
 
 class Login extends Component {
   onSubmit = async ({ email, password }) => {
-    const response = await this.props.mutate({
-      variables: { email, password },
-      refetchQueries: [{ query: currentUserQuery }]
+    const response = await this.props.login({
+      variables: { email, password }
     });
     const { status, payload, errors } = response.data.login;
     if (status) {
       const { token } = payload;
       this.props.authSetToken({ token });
+      this.props.client.resetStore();
       this.props.reset(); // clear form
     } else {
       // server-side errors
@@ -99,8 +98,9 @@ const loginMutation = gql`
   }
 `;
 
-export default graphql(loginMutation)(
-  connect(mapStateToProps, mapDispatchToProps)(
-    reduxForm({ form: 'login', destroyOnUnmount: false })(Login)
-  )
-);
+export default compose(
+  graphql(loginMutation, { name: 'login' }),
+  withApollo,
+  connect(mapStateToProps, mapDispatchToProps),
+  reduxForm({ form: 'login', destroyOnUnmount: false })
+)(Login);

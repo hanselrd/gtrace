@@ -24,7 +24,7 @@ class Profile extends Component {
     return (
       <div className="Profile">
         <p>User ID: {user.id}</p>
-        <p>Username: {user.username}</p>
+        <p>Name: {user.name}</p>
         <p>Email: {user.email}</p>
         <p>Language: {user.language}</p>
       </div>
@@ -37,7 +37,7 @@ const userByIdQuery = gql`
     user(id: $id) {
       id
       email
-      username
+      name
       language
     }
   }

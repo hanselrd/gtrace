@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { wsClient } from '../../';
 import { mapStateToProps, mapDispatchToProps } from '../../utils';
-import { graphql, withApollo } from 'react-apollo';
+import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 // import locales from '../../locales';
 
 class Home extends Component {
+  componentWillMount() {
+    this.props.subscribeToNewUser();
+  }
+
   render() {
     const { data: { loading, users } } = this.props;
     return (
@@ -17,6 +22,7 @@ class Home extends Component {
           onClick={() => {
             this.props.authUnsetToken();
             this.props.client.resetStore();
+            wsClient.close(true);
           }}
         >
           Logout
@@ -27,7 +33,7 @@ class Home extends Component {
           users.map(user => {
             return (
               <p key={user.id}>
-                <NavLink to={'/profile/' + user.id}>{user.email}</NavLink>
+                <NavLink to={'/profile/' + user.id}>{user.name}</NavLink>
               </p>
             );
           })}
@@ -40,13 +46,41 @@ const usersQuery = gql`
   query {
     users {
       id
-      email
+      name
     }
   }
 `;
 
-export default withApollo(
+const newUserSubscription = gql`
+  subscription {
+    newUser {
+      id
+      name
+    }
+  }
+`;
+
+export default compose(
   graphql(usersQuery, {
-    options: { pollInterval: 5000 }
-  })(connect(mapStateToProps, mapDispatchToProps)(Home))
-);
+    props: props => {
+      return {
+        ...props,
+        subscribeToNewUser: params => {
+          return props.data.subscribeToMore({
+            document: newUserSubscription,
+            updateQuery: (prev, { subscriptionData }) => {
+              if (!subscriptionData.data) {
+                return prev;
+              }
+
+              const { newUser } = subscriptionData.data;
+              return { ...prev, users: [...prev.users, newUser] };
+            }
+          });
+        }
+      };
+    }
+  }),
+  withApollo,
+  connect(mapStateToProps, mapDispatchToProps)
+)(Home);

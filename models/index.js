@@ -23,7 +23,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const models = {
-  User: sequelize.import('./User')
+  Game: sequelize.import('./game'),
+  Message: sequelize.import('./message'),
+  Role: sequelize.import('./role'),
+  User: sequelize.import('./user')
 };
 
 Object.keys(models).forEach(key => {

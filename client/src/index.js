@@ -5,7 +5,11 @@ import App from './components/App';
 // import registerServiceWorker from './registerServiceWorker';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
-import { createHttpLink } from 'apollo-link-http';
+import { split } from 'apollo-link';
+import { HttpLink } from 'apollo-link-http';
+import { WebSocketLink } from 'apollo-link-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { getMainDefinition } from 'apollo-utilities';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { Provider } from 'react-redux';
@@ -14,15 +18,45 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 let httpLink = null;
 
+export let wsClient = null;
+
+const wsClientOptions = {
+  reconnect: true,
+  connectionParams: () => ({
+    token: localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN_KEY)
+  })
+};
+
 if (process.env.NODE_ENV === 'development') {
-  httpLink = createHttpLink({
+  httpLink = new HttpLink({
     uri: 'http://localhost:5000/graphql'
   });
+
+  wsClient = new SubscriptionClient(
+    'ws://localhost:5000/subscriptions',
+    wsClientOptions
+  );
 } else if (process.env.NODE_ENV === 'production') {
-  httpLink = createHttpLink({
+  httpLink = new HttpLink({
     uri: 'https://traceapp.herokuapp.com/graphql'
   });
+
+  wsClient = new SubscriptionClient(
+    'wss://traceapp.herokuapp.com/subscriptions',
+    wsClientOptions
+  );
 }
+
+const wsLink = new WebSocketLink(wsClient);
+
+const link = split(
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query);
+    return kind === 'OperationDefinition' && operation === 'subscription';
+  },
+  wsLink,
+  httpLink
+);
 
 const authLink = setContext((_, { headers }) => {
   return {
@@ -35,13 +69,13 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+const apolloClient = new ApolloClient({
+  link: authLink.concat(link),
   cache: new InMemoryCache()
 });
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
+  <ApolloProvider client={apolloClient}>
     <Provider store={store}>
       <Router>
         <App />

@@ -3,7 +3,7 @@ import '../styles/App.css';
 import { NavLink, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { mapStateToProps, mapDispatchToProps } from '../utils';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import Routes from './Routes';
 import Footer from './Footer';
@@ -46,7 +46,7 @@ class App extends Component {
   }
 }
 
-export const currentUserQuery = gql`
+const currentUserQuery = gql`
   query {
     currentUser {
       id
@@ -54,8 +54,8 @@ export const currentUserQuery = gql`
   }
 `;
 
-export default withRouter(
-  graphql(currentUserQuery, {
-    options: { pollInterval: 5000 }
-  })(connect(mapStateToProps, mapDispatchToProps)(App))
-);
+export default compose(
+  withRouter,
+  graphql(currentUserQuery),
+  connect(mapStateToProps, mapDispatchToProps)
+)(App);
