@@ -1,25 +1,30 @@
 module.exports = `
   type User {
     id: Int!
-    username: String!
+    name: String!
     email: String!
     language: String!
+    online: Boolean!
+    messages: [Message!]
+    role: Role
+    createdAt: Date!
   }
 
   type Query {
-    user(id: Int!): User
     users: [User!]
+    user(id: Int!): User
     currentUser: User
-    refreshToken: String
+    newToken: String
+    onlineUsers: [User!]
   }
 
   type Mutation {
     login(email: String!, password: String!): Response!
-    register(username: String!, email: String!, password: String!, language: String = "en"): Response!
+    register(name: String!, email: String!, password: String!, language: String): Response!
     changePassword(oldPassword: String!, newPassword: String!): Response!
   }
 
   type Subscription {
-    newUser: User!
+    userAdded: User!
   }
 `;

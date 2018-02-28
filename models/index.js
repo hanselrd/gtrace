@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === 'development') {
   sequelize = new Sequelize('trace', 'postgres', 'postgres', {
     dialect: 'postgres',
     define: {
-      underscored: true
+      paranoid: true
     }
   });
 } else if (process.env.NODE_ENV === 'production') {
@@ -17,13 +17,16 @@ if (process.env.NODE_ENV === 'development') {
       ssl: true
     },
     define: {
-      underscored: true
+      paranoid: true
     }
   });
 }
 
 const models = {
-  User: sequelize.import('./User')
+  Game: sequelize.import('./game'),
+  Message: sequelize.import('./message'),
+  Role: sequelize.import('./role'),
+  User: sequelize.import('./user')
 };
 
 Object.keys(models).forEach(key => {

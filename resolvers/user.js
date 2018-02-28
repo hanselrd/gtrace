@@ -1,13 +1,17 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const { withFilter } = require('graphql-subscriptions');
 const { formatErrors } = require('../utils');
+const models = require('../models');
 const pubsub = require('../pubsub');
 
 module.exports = {
   Query: {
-    user: (parent, { id }, { models }) => models.User.findById(id),
-    users: (parent, args, { models }) => models.User.findAll(),
+    users: (parent, args, { models }) =>
+      models.User.findAll({ include: [models.Message, models.Role] }),
+    user: (parent, { id }, { models }) =>
+      models.User.findOne({
+        where: { id },
+        include: [models.Message, models.Role]
+      }),
     currentUser: (parent, args, { models, user }) => {
       if (user) {
         return user;
@@ -15,26 +19,23 @@ module.exports = {
         return null;
       }
     },
-    refreshToken: (parent, args, { models, user }) => {
+    newToken: (parent, args, { models, user }) => {
       if (user) {
-        return jwt.sign(
-          {
-            sub: user.id,
-            iss: 'Trace'
-          },
-          user.password + process.env.SECRET,
-          {
-            expiresIn: '7d'
-          }
-        );
+        return user.newToken();
       } else {
         return null;
       }
-    }
+    },
+    onlineUsers: (parent, args, { models }) =>
+      models.User.findAll({
+        where: { online: true },
+        include: [models.Message, models.Role]
+      })
   },
   Mutation: {
     login: async (parent, { email, password }, { models }) => {
       const user = await models.User.findOne({ where: { email } });
+
       if (!user) {
         return {
           status: false,
@@ -42,7 +43,8 @@ module.exports = {
         };
       }
 
-      const valid = await bcrypt.compare(password, user.password);
+      const valid = await user.authenticate(password);
+
       if (!valid) {
         return {
           status: false,
@@ -50,21 +52,10 @@ module.exports = {
         };
       }
 
-      const token = jwt.sign(
-        {
-          sub: user.id,
-          iss: 'Trace'
-        },
-        user.password + process.env.SECRET,
-        {
-          expiresIn: '7d'
-        }
-      );
-
       return {
         status: true,
         payload: {
-          token
+          token: user.newToken()
         }
       };
     },
@@ -72,10 +63,13 @@ module.exports = {
       try {
         const user = await models.User.create(args);
 
-        pubsub.publish('newUser', { newUser: user });
+        pubsub.publish('userAdded', { userAdded: user });
 
         return {
-          status: true
+          status: true,
+          payload: {
+            token: user.newToken()
+          }
         };
       } catch (err) {
         return {
@@ -90,51 +84,36 @@ module.exports = {
       { models, user }
     ) => {
       if (user) {
-        const valid = await bcrypt.compare(oldPassword, user.password);
-        if (!valid) {
-          return {
-            status: false,
-            errors: [{ path: 'oldPassword', message: 'Password is incorrect' }]
-          };
-        }
-
-        if (oldPassword === newPassword) {
-          return {
-            status: false,
-            errors: [
-              {
-                path: 'newPasword',
-                message: 'New password cannot match old password'
-              }
-            ]
-          };
-        }
-
         try {
-          await models.User.update(
-            { password: newPassword },
-            { where: { id: user.id } }
-          );
+          const valid = await user.authenticate(oldPassword);
 
-          const updatedUser = await models.User.findOne({
-            where: { id: user.id }
-          });
+          if (!valid) {
+            return {
+              status: false,
+              errors: [
+                { path: 'oldPassword', message: 'Password is incorrect' }
+              ]
+            };
+          }
 
-          const token = jwt.sign(
-            {
-              sub: user.id,
-              iss: 'Trace'
-            },
-            updatedUser.password + process.env.SECRET,
-            {
-              expiresIn: '7d'
-            }
-          );
+          if (oldPassword === newPassword) {
+            return {
+              status: false,
+              errors: [
+                {
+                  path: 'newPasword',
+                  message: 'New password cannot match old password'
+                }
+              ]
+            };
+          }
+
+          await user.changePassword(newPassword);
 
           return {
             status: true,
             payload: {
-              token
+              token: user.newToken()
             }
           };
         } catch (err) {
@@ -152,10 +131,10 @@ module.exports = {
     }
   },
   Subscription: {
-    newUser: {
+    userAdded: {
       // must have valid token to see new users as they register
       // because onConnect throws an error for missing token
-      subscribe: () => pubsub.asyncIterator('newUser')
+      subscribe: () => pubsub.asyncIterator('userAdded')
     }
     // newFriend: {
     //   subscribe: withFilter(
