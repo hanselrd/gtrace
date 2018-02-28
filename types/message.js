@@ -3,6 +3,7 @@ module.exports = `
     id: Int!
     text: String!
     user: User!
+    createdAt: Date!
   }
 
   type Query {

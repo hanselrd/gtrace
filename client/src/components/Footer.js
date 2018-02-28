@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 
 class Footer extends Component {
-  state = {
-    date: new Date()
-  };
-
   render() {
-    const { date } = this.state;
+    const date = new Date();
     return (
       <div className="Footer">
         <p>

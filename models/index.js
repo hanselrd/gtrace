@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === 'development') {
   sequelize = new Sequelize('trace', 'postgres', 'postgres', {
     dialect: 'postgres',
     define: {
-      underscored: true
+      paranoid: true
     }
   });
 } else if (process.env.NODE_ENV === 'production') {
@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
       ssl: true
     },
     define: {
-      underscored: true
+      paranoid: true
     }
   });
 }

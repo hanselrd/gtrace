@@ -63,7 +63,7 @@ module.exports = {
       try {
         const user = await models.User.create(args);
 
-        pubsub.publish('newUser', { newUser: user });
+        pubsub.publish('userAdded', { userAdded: user });
 
         return {
           status: true,
@@ -131,10 +131,10 @@ module.exports = {
     }
   },
   Subscription: {
-    newUser: {
+    userAdded: {
       // must have valid token to see new users as they register
       // because onConnect throws an error for missing token
-      subscribe: () => pubsub.asyncIterator('newUser')
+      subscribe: () => pubsub.asyncIterator('userAdded')
     }
     // newFriend: {
     //   subscribe: withFilter(

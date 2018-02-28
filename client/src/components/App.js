@@ -33,7 +33,9 @@ class App extends Component {
           {auth &&
             currentUser && (
               <li>
-                <NavLink to={'/profile/' + currentUser.id}>Profile</NavLink>
+                <NavLink to={'/profile/' + currentUser.id}>
+                  {currentUser.name}
+                </NavLink>
               </li>
             )}
         </ul>
@@ -50,6 +52,7 @@ const currentUserQuery = gql`
   query {
     currentUser {
       id
+      name
     }
   }
 `;

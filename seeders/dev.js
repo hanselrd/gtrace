@@ -28,19 +28,19 @@ module.exports = async () => {
 
   users.forEach(async user => {
     if (user.id === 1) {
-      await user.addRole(1);
+      await user.setRole(1);
     }
 
     if (user.id % 2 === 0) {
-      await user.addRole(2);
+      await user.setRole(2);
     }
 
     if (user.id % 3 === 0) {
-      await user.addRole(3);
+      await user.setRole(3);
     }
 
     if (user.id % 4 === 0) {
-      await user.addRole(4);
+      await user.setRole(4);
     }
 
     await user.createMessage({ text: `My name is ${user.name}` });

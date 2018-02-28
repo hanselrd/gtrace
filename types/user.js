@@ -6,7 +6,8 @@ module.exports = `
     language: String!
     online: Boolean!
     messages: [Message!]
-    roles: [Role!]
+    role: Role
+    createdAt: Date!
   }
 
   type Query {
@@ -24,6 +25,6 @@ module.exports = `
   }
 
   type Subscription {
-    newUser: User!
+    userAdded: User!
   }
 `;

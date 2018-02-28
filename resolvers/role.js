@@ -1,4 +1,4 @@
-const { formatError } = require('../utils');
+const { formatErrors } = require('../utils');
 const models = require('../models');
 
 module.exports = {

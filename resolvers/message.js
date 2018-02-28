@@ -1,4 +1,4 @@
-const { formatError } = require('../utils');
+const { formatErrors } = require('../utils');
 const models = require('../models');
 const pubsub = require('../pubsub');
 
@@ -19,7 +19,11 @@ module.exports = {
       }
 
       try {
-        const message = await user.createMessage(args);
+        let message = await user.createMessage(args);
+        message = await models.Message.findOne({
+          where: { id: message.id },
+          include: [models.User]
+        });
 
         pubsub.publish('messageAdded', { messageAdded: message });
 

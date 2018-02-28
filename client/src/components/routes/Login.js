@@ -1,34 +1,13 @@
 import React, { Component } from 'react';
-import { Button, Container, Form, Input, Header } from 'semantic-ui-react';
+import { Button, Container, Form, Header } from 'semantic-ui-react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
+import renderField from '../renderField';
 import { connect } from 'react-redux';
 import { mapStateToProps, mapDispatchToProps } from '../../utils';
 import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const required = value => (value ? undefined : 'Required');
-
-class renderField extends Component {
-  render() {
-    const {
-      input,
-      label,
-      type,
-      meta: { touched, error, warning }
-    } = this.props;
-    return (
-      <Form.Field error={touched && !!error}>
-        <label>{label}</label>
-        <Input {...input} placeholder={label} type={type} fluid />
-        {touched &&
-          ((error && <label style={{ fontSize: '0.8em' }}>{error}</label>) ||
-            (warning && (
-              <label style={{ fontSize: '0.8em' }}>{warning}</label>
-            )))}
-      </Form.Field>
-    );
-  }
-}
 
 class Login extends Component {
   onSubmit = async ({ email, password }) => {
@@ -57,7 +36,7 @@ class Login extends Component {
       <div className="Login">
         <Container text>
           <Header as="h2">Login</Header>
-          <Form onSubmit={handleSubmit(this.onSubmit)}>
+          <Form onSubmit={handleSubmit(this.onSubmit)} loading={submitting}>
             <Field
               name="email"
               label="Email"

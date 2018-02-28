@@ -84,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
       otherKey: 'user_2_id'
     });
     User.belongsToMany(models.Game, { through: 'user_game' });
-    User.belongsToMany(models.Role, { through: 'user_role' });
+    User.belongsTo(models.Role);
     User.hasMany(models.Message);
   };
 
@@ -97,25 +97,20 @@ module.exports = (sequelize, DataTypes) => {
     return this.save();
   };
 
-  // internal
-  User.prototype.hasRole = function(name) {
-    return this.roles.filter(role => role.name === name).length > 0;
-  };
-
   User.prototype.isOwner = function() {
-    return this.hasRole('Owner');
+    return this.role.name === 'Owner';
   };
 
   User.prototype.isAdmin = function() {
-    return this.hasRole('Administrator');
+    return this.role.name === 'Administrator';
   };
 
   User.prototype.isMod = function() {
-    return this.hasRole('Moderator');
+    return this.role.name === 'Moderator';
   };
 
   User.prototype.isDev = function() {
-    return this.hasRole('Developer');
+    return this.role.name === 'Developer';
   };
 
   User.prototype.newToken = function() {
