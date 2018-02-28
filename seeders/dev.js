@@ -20,7 +20,7 @@ module.exports = async () => {
   await models.Role.bulkCreate([
     { name: 'Owner', abbreviation: 'Owner', color: 'black' },
     { name: 'Administrator', abbreviation: 'Admin', color: 'red' },
-    { name: 'Moderator', abbreviation: 'Mod', color: 'teal' },
+    { name: 'Moderator', abbreviation: 'Mod', color: 'blue' },
     { name: 'Developer', abbreviation: 'Dev', color: 'brown' }
   ]);
 

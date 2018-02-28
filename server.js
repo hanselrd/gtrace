@@ -52,6 +52,14 @@ if (process.env.NODE_ENV === 'development') {
       subscriptionsEndpoint: `ws://localhost:${port}/subscriptions`
     })
   );
+} else if (process.env.NODE_ENV === 'production') {
+  app.use(
+    '/graphiql',
+    graphiqlExpress({
+      endpointURL: '/graphql',
+      subscriptionsEndpoint: `wss://traceapp.herokuapp.com/subscriptions`
+    })
+  );
 }
 
 app.use(express.static(path.join(__dirname, 'client/build')));
