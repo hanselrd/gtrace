@@ -1,8 +1,6 @@
 export default {
-  home: {
-    user: 'User',
-    username: 'Username',
-    email: 'Email',
-    password: 'Password'
-  }
+  user: 'User',
+  name: 'Name',
+  email: 'Email',
+  password: 'Password'
 };

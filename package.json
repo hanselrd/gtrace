@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "export NODE_ENV='development' SECRET='secret' && node server.js",
+    "start": "node -r dotenv/config server.js",
     "heroku:local": "heroku local",
     "build:client": "cd client && npm run build",
     "build": "npm run build:client",
@@ -27,6 +27,7 @@
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
+    "dotenv": "^5.0.1",
     "express": "^4.16.2",
     "graphql": "^0.13.1",
     "graphql-date": "^1.0.3",
