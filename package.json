@@ -2,9 +2,9 @@
   "name": "trace",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node -r dotenv/config server.js",
+    "start": "node -r dotenv/config app.js",
     "heroku:local": "heroku local",
     "build:client": "cd client && npm run build",
     "build": "npm run build:client",

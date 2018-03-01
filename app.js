@@ -7,10 +7,10 @@ const path = require('path');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const { execute, subscribe } = require('graphql');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
-const schema = require('./schema');
-const models = require('./models');
-const seeders = require('./seeders');
-const auth = require('./auth');
+const schema = require('./server/schema');
+const models = require('./server/models');
+const seeders = require('./server/seeders');
+const auth = require('./server/auth');
 
 const app = express();
 const port = process.env.PORT || 5000;
