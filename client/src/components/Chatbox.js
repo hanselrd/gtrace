@@ -49,7 +49,7 @@ class Chatbox extends Component {
       return <p>No messages found</p>;
     }
 
-    const { handleSubmit, submitting, users } = this.props;
+    const { handleSubmit, users } = this.props;
 
     return (
       <div className="Chatbox">
@@ -114,7 +114,7 @@ class Chatbox extends Component {
               ))}
             </div>
           </Comment.Group>
-          <Form onSubmit={handleSubmit(this.onSubmit)} disabled={submitting}>
+          <Form onSubmit={handleSubmit(this.onSubmit)}>
             <Field name="text" type="text" component={renderField} />
           </Form>
         </Container>

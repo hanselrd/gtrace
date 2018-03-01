@@ -1,21 +1,24 @@
 import React, { Component } from 'react';
-import { Button, Container, Form, Header } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Select } from 'semantic-ui-react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import renderField from '../renderField';
 import { Link } from 'react-router-dom';
-
 import { withRedux } from '../../utils';
 import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const required = value => (value ? undefined : 'Required');
+const options = [
+  { key: 'en', text: 'English', value: 'en' },
+  { key: 'es', text: 'Spanish', value: 'es' }
+];
 
-class Login extends Component {
-  onSubmit = async ({ email, password }) => {
-    const response = await this.props.login({
-      variables: { email, password }
+class Signup extends Component {
+  onSubmit = async ({ name, email, password, language }) => {
+    const response = await this.props.signup({
+      variables: { name, email, password, language }
     });
-    const { status, payload, errors } = response.data.login;
+    const { status, payload, errors } = response.data.register;
     if (status) {
       const { token } = payload;
       this.props.authSetToken({ token });
@@ -34,10 +37,17 @@ class Login extends Component {
   render() {
     const { handleSubmit, submitting } = this.props;
     return (
-      <div className="Login">
+      <div className="Signup">
         <Container text>
-          <Header as="h2">Login</Header>
+          <Header as="h2">Signup</Header>
           <Form onSubmit={handleSubmit(this.onSubmit)} loading={submitting}>
+            <Field
+              name="name"
+              label="Name"
+              type="text"
+              component={renderField}
+              validate={required}
+            />
             <Field
               name="email"
               label="Email"
@@ -52,11 +62,19 @@ class Login extends Component {
               component={renderField}
               validate={required}
             />
+            <Field
+              name="language"
+              label="Language"
+              control={Select}
+              options={options}
+              component={renderField}
+              validate={required}
+            />
             <Button primary type="submit" disabled={submitting}>
               Submit
             </Button>
-            <Button as={Link} to="/signup">
-              Create an account
+            <Button as={Link} to="/login">
+              I already have an account
             </Button>
           </Form>
         </Container>
@@ -65,9 +83,19 @@ class Login extends Component {
   }
 }
 
-const loginMutation = gql`
-  mutation($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+const signupMutation = gql`
+  mutation(
+    $name: String!
+    $email: String!
+    $password: String!
+    $language: String!
+  ) {
+    register(
+      name: $name
+      email: $email
+      password: $password
+      language: $language
+    ) {
       status
       payload
       errors {
@@ -79,8 +107,8 @@ const loginMutation = gql`
 `;
 
 export default compose(
-  graphql(loginMutation, { name: 'login' }),
+  graphql(signupMutation, { name: 'signup' }),
   withApollo,
   withRedux,
-  reduxForm({ form: 'login', destroyOnUnmount: false })
-)(Login);
+  reduxForm({ form: 'signup', destroyOnUnmount: false })
+)(Signup);

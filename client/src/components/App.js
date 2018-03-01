@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import '../styles/App.css';
 import { NavLink, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { mapStateToProps, mapDispatchToProps } from '../utils';
+import { withRedux } from '../utils';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
+import Aux from 'react-aux';
 import Routes from './Routes';
 import Footer from './Footer';
 
@@ -26,9 +26,14 @@ class App extends Component {
             </li>
           )}
           {!auth && (
-            <li>
-              <NavLink to="/login">Login</NavLink>
-            </li>
+            <Aux>
+              <li>
+                <NavLink to="/login">Log in</NavLink>
+              </li>
+              <li>
+                <NavLink to="/signup">Sign up</NavLink>
+              </li>
+            </Aux>
           )}
           {auth &&
             currentUser && (
@@ -57,8 +62,4 @@ const currentUserQuery = gql`
   }
 `;
 
-export default compose(
-  withRouter,
-  graphql(currentUserQuery),
-  connect(mapStateToProps, mapDispatchToProps)
-)(App);
+export default compose(withRouter, graphql(currentUserQuery), withRedux)(App);

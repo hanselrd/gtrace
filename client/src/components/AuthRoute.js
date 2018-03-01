@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { mapStateToProps, mapDispatchToProps } from '../utils';
+import { withRedux } from '../utils';
 
 class AuthRoute extends Component {
   render() {
@@ -10,4 +9,4 @@ class AuthRoute extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthRoute);
+export default withRedux(AuthRoute);

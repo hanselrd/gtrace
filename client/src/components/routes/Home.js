@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { mapStateToProps, mapDispatchToProps } from '../../utils';
+import { withRedux } from '../../utils';
 import { wsClient } from '../../';
 import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -94,5 +93,5 @@ export default compose(
     })
   }),
   withApollo,
-  connect(mapStateToProps, mapDispatchToProps)
+  withRedux
 )(Home);

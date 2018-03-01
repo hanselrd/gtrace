@@ -5,6 +5,7 @@ import AuthRoute from './AuthRoute';
 import GuestRoute from './GuestRoute';
 import Home from './routes/Home';
 import Login from './routes/Login';
+import Signup from './routes/Signup';
 import Profile from './routes/Profile';
 
 class Routes extends Component {
@@ -19,6 +20,7 @@ class Routes extends Component {
       <Switch>
         <AuthRoute exact path="/" component={Home} />
         <GuestRoute exact path="/login" component={Login} />
+        <GuestRoute exact path="/signup" component={Signup} />
         <AuthRoute exact path="/profile/:id" component={Profile} />
       </Switch>
     );
