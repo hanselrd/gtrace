@@ -3,7 +3,6 @@ import { Button, Container, Form, Header } from 'semantic-ui-react';
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import renderField from '../renderField';
 import { Link } from 'react-router-dom';
-
 import { withRedux } from '../../utils';
 import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
