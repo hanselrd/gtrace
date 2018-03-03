@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node -r dotenv/config app.js dotenv_config_path=env/.env.dev",
-    "test-server": "node -r dotenv/config app.js dotenv_config_path=env/.env.test",
+    "start": "node -r dotenv/config app.js dotenv_config_path=server/env/.env.dev",
+    "test-server": "node -r dotenv/config app.js dotenv_config_path=server/env/.env.test",
     "heroku:local": "heroku local",
     "build:client": "cd client && npm run build",
     "build": "npm run build:client",
