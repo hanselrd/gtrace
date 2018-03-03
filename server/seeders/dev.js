@@ -12,12 +12,18 @@ module.exports = async () => {
       { name: 'test7', email: 'test7@gmail.com', password: '123456' },
       { name: 'test8', email: 'test8@gmail.com', password: '123456' },
       { name: 'test9', email: 'test9@gmail.com', password: '123456' },
-      { name: 'test10', email: 'test10@gmail.com', password: '123456' }
+      {
+        name: 'test10',
+        email: 'test10@gmail.com',
+        password: '123456',
+        language: 'es'
+      }
     ],
     { individualHooks: true }
   );
 
   await models.Role.bulkCreate([
+    { name: 'Bot', abbreviation: 'Bot', color: 'orange' },
     { name: 'Owner', abbreviation: 'Owner', color: 'black' },
     { name: 'Administrator', abbreviation: 'Admin', color: 'red' },
     { name: 'Moderator', abbreviation: 'Mod', color: 'blue' },
@@ -33,14 +39,22 @@ module.exports = async () => {
 
     if (user.id % 2 === 0) {
       await user.setRole(2);
+      await user.addFriend(1, { through: { accepted: true } });
     }
 
     if (user.id % 3 === 0) {
       await user.setRole(3);
+      await user.addFriend(2);
     }
 
     if (user.id % 4 === 0) {
       await user.setRole(4);
+      await user.addFriend(3, { through: { accepted: true } });
+    }
+
+    if (user.id % 5 === 0) {
+      await user.setRole(5);
+      await user.addFriend(4);
     }
 
     await user.createMessage({ text: `My name is ${user.name}` });

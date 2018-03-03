@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Label } from 'semantic-ui-react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import locales from '../../locales';
 
 class Profile extends Component {
   componentWillMount() {
@@ -23,25 +24,36 @@ class Profile extends Component {
 
     return (
       <div className="Profile">
-        <p>User ID: {user.id}</p>
-        <p>Name: {user.name}</p>
-        <p>Email: {user.email}</p>
         <p>
-          Language:{' '}
-          {user.language === 'en'
-            ? 'English'
-            : user.language === 'es' ? 'Spanish' : null}
+          {locales.userId}: {user.id}
         </p>
-        <p>Online: {user.online ? 'Yes' : 'No'}</p>
+        <p>
+          {locales.name}: {user.name}
+        </p>
+        <p>
+          {locales.email}: {user.email}
+        </p>
+        <p>
+          {locales.language}:{' '}
+          {user.language === 'en'
+            ? locales.english
+            : user.language === 'es' ? locales.spanish : null}
+        </p>
+        <p>
+          {locales.online}: {user.online ? locales.yes : locales.no}
+        </p>
         <div>
-          Role:{' '}
+          {locales.role}:{' '}
           {user.role && (
             <Label key={user.role.id} color={user.role.color}>
               {user.role.abbreviation}
             </Label>
           )}
         </div>
-        <p>Joined: {joined.toLocaleString('en-US', options)}</p>
+        <p>
+          {locales.joined}:{' '}
+          {joined.toLocaleString(locales.getLanguage(), options)}
+        </p>
       </div>
     );
   }

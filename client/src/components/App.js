@@ -15,6 +15,13 @@ class App extends Component {
     this.props.localeStart();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data.currentUser && !this.props.data.currentUser) {
+      const { language } = nextProps.data.currentUser;
+      this.props.localeChange(language);
+    }
+  }
+
   render() {
     const { auth, data: { currentUser } } = this.props;
     return (
@@ -58,6 +65,7 @@ const currentUserQuery = gql`
     currentUser {
       id
       name
+      language
     }
   }
 `;

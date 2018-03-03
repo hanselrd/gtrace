@@ -23,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const models = {
+  Friend: sequelize.import('./friend'),
   Game: sequelize.import('./game'),
   Message: sequelize.import('./message'),
   Role: sequelize.import('./role'),

@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { graphql, compose } from 'react-apollo';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
+import locales from '../locales';
 
 class Chatbox extends Component {
   componentWillMount() {
@@ -104,7 +105,9 @@ class Chatbox extends Component {
                       <div>
                         {(() => {
                           const date = new Date(message.createdAt);
-                          return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+                          return `${date.toLocaleDateString(
+                            locales.getLanguage()
+                          )} ${date.toLocaleTimeString(locales.getLanguage())}`;
                         })()}
                       </div>
                     </Comment.Metadata>

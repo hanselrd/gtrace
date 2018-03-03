@@ -18,7 +18,7 @@ class Signup extends Component {
     const response = await this.props.signup({
       variables: { name, email, password, language }
     });
-    const { status, payload, errors } = response.data.register;
+    const { status, payload, errors } = response.data.signup;
     if (status) {
       const { token } = payload;
       this.props.authSetToken({ token });
@@ -90,7 +90,7 @@ const signupMutation = gql`
     $password: String!
     $language: String!
   ) {
-    register(
+    signup(
       name: $name
       email: $email
       password: $password

@@ -59,7 +59,7 @@ module.exports = {
         }
       };
     },
-    register: async (parent, args, { models }) => {
+    signup: async (parent, args, { models }) => {
       try {
         const user = await models.User.create(args);
 

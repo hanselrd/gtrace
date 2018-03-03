@@ -6,7 +6,6 @@ import { wsClient } from '../../';
 import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import Chatbox from '../Chatbox';
-// import locales from '../../locales';
 
 class Home extends Component {
   componentWillMount() {

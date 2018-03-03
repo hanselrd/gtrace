@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: {
           args: true,
-          msg: 'Name is already in use'
+          msg: 'Name is already in taken'
         },
         validate: {
           isAlphanumeric: {
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         unique: {
           args: true,
-          msg: 'Email is already in use'
+          msg: 'Email is already taken'
         },
         validate: {
           isEmail: {
@@ -78,12 +78,12 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = models => {
     User.belongsToMany(User, {
-      as: 'Friends',
-      through: 'friends',
-      foreignKey: 'user_1_id',
-      otherKey: 'user_2_id'
+      as: 'friends',
+      through: models.Friend,
+      foreignKey: 'user1Id',
+      otherKey: 'user2Id'
     });
-    User.belongsToMany(models.Game, { through: 'user_game' });
+    User.belongsToMany(models.Game, { through: 'users_games' });
     User.belongsTo(models.Role);
     User.hasMany(models.Message);
   };
