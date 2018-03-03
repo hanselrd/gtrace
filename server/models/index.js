@@ -9,6 +9,10 @@ if (process.env.NODE_ENV === 'development') {
       paranoid: true
     }
   });
+} else if (process.env.NODE_ENV === 'test') {
+  sequelize = new Sequelize('tracetest', 'postgres', 'postgres', {
+    dialect: 'postgres'
+  });
 } else if (process.env.NODE_ENV === 'production') {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',

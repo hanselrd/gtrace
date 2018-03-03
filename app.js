@@ -10,7 +10,7 @@ const { SubscriptionServer } = require('subscriptions-transport-ws');
 const { auth, models, schema, seeders } = require('./server');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 
 app.use(cors());
 
@@ -41,7 +41,7 @@ app.use(
   }))
 );
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV !== 'production') {
   app.use(
     '/graphiql',
     graphiqlExpress({
@@ -57,54 +57,56 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
-models.sequelize.sync({ force: false }).then(async () => {
-  if ((await models.Role.findAll({ raw: true })).length === 0) {
-    await seeders();
-  } else {
-    await models.User.update({ online: false }, { where: { online: true } });
-  }
+models.sequelize
+  .sync({ force: process.env.NODE_ENV === 'test' })
+  .then(async () => {
+    if ((await models.Role.findAll({ raw: true })).length === 0) {
+      await seeders();
+    } else {
+      await models.User.update({ online: false }, { where: { online: true } });
+    }
 
-  const wss = http.createServer(app);
-  wss.listen(port, () => {
-    new SubscriptionServer(
-      {
-        execute,
-        subscribe,
-        schema,
-        onConnect: async (connectionParams, webSocket) => {
-          let token = connectionParams.token; // frontend
-          if (!token) {
-            token = webSocket.upgradeReq.headers['x-token']; // graphiql
-          }
+    const wss = http.createServer(app);
+    wss.listen(port, () => {
+      new SubscriptionServer(
+        {
+          execute,
+          subscribe,
+          schema,
+          onConnect: async (connectionParams, webSocket) => {
+            let token = connectionParams.token; // frontend
+            if (!token) {
+              token = webSocket.upgradeReq.headers['x-token']; // graphiql
+            }
 
-          if (token) {
-            try {
-              const user = await auth(token);
-              user.online = true;
+            if (token) {
+              try {
+                const user = await auth(token);
+                user.online = true;
+                user.save();
+                webSocket.user = user;
+                return { models, user };
+              } catch (err) {
+                console.error(err);
+                throw new Error(err.message);
+              }
+            }
+            throw new Error('Missing auth token');
+          },
+          onDisconnect: webSocket => {
+            const { user } = webSocket;
+            if (user) {
+              user.online = false;
               user.save();
-              webSocket.user = user;
-              return { user };
-            } catch (err) {
-              console.error(err);
-              throw new Error(err.message);
             }
           }
-          throw new Error('Missing auth token');
         },
-        onDisconnect: webSocket => {
-          const { user } = webSocket;
-          if (user) {
-            user.online = false;
-            user.save();
-          }
+        {
+          server: wss,
+          path: '/subscriptions'
         }
-      },
-      {
-        server: wss,
-        path: '/subscriptions'
-      }
-    );
+      );
 
-    console.log(`Server running on port ${port}`);
+      console.log(`Server running on port ${port}`);
+    });
   });
-});

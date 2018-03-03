@@ -29,11 +29,11 @@ const wsClientOptions = {
 
 if (process.env.NODE_ENV === 'development') {
   httpLink = new HttpLink({
-    uri: 'http://localhost:5000/graphql'
+    uri: 'http://localhost:4000/graphql'
   });
 
   wsClient = new SubscriptionClient(
-    'ws://localhost:5000/subscriptions',
+    'ws://localhost:4000/subscriptions',
     wsClientOptions
   );
 } else if (process.env.NODE_ENV === 'production') {

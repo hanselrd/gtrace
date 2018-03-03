@@ -21,7 +21,7 @@ module.exports = `
   type Mutation {
     login(email: String!, password: String!): Response!
     signup(name: String!, email: String!, password: String!, language: String): Response!
-    changePassword(oldPassword: String!, newPassword: String!): Response!
+    changePassword(oldPassword: String!, password: String!): Response!
   }
 
   type Subscription {

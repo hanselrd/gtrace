@@ -80,7 +80,7 @@ module.exports = {
     },
     changePassword: async (
       parent,
-      { oldPassword, newPassword },
+      { oldPassword, password },
       { models, user }
     ) => {
       if (user) {
@@ -96,19 +96,19 @@ module.exports = {
             };
           }
 
-          if (oldPassword === newPassword) {
+          if (oldPassword === password) {
             return {
               status: false,
               errors: [
                 {
-                  path: 'newPasword',
+                  path: 'password',
                   message: 'New password cannot match old password'
                 }
               ]
             };
           }
 
-          await user.changePassword(newPassword);
+          await user.changePassword(password);
 
           return {
             status: true,
