@@ -1,7 +1,7 @@
 const { withFilter } = require('graphql-subscriptions');
-const { formatErrors } = require('../utils');
-const models = require('../models');
-const pubsub = require('../pubsub');
+const { formatErrors } = require('../../utils');
+const models = require('../../models');
+const pubsub = require('../../pubsub');
 
 module.exports = {
   Query: {

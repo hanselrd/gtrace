@@ -8,7 +8,7 @@ const models = require('./models');
 */
 module.exports = async token => {
   try {
-    const decoded = jwt.decode(token);
+    const decoded = jwt.decode(token.replace('Bearer ', ''));
 
     if (!decoded) {
       return null;
@@ -20,7 +20,10 @@ module.exports = async token => {
       include: [models.Message, models.Role]
     });
 
-    jwt.verify(token, user.password + process.env.SECRET);
+    jwt.verify(
+      token.replace('Bearer ', ''),
+      user.password + process.env.SECRET
+    );
     return user;
   } catch (err) {
     console.error(err);

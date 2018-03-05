@@ -1,5 +1,5 @@
-const { formatErrors } = require('../utils');
-const models = require('../models');
+const { formatErrors } = require('../../utils');
+const models = require('../../models');
 const Op = models.Sequelize.Op;
 
 module.exports = {

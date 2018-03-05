@@ -6,12 +6,11 @@
   "scripts": {
     "start": "node -r dotenv/config app.js dotenv_config_path=server/env/.env.dev",
     "test-server": "node -r dotenv/config app.js dotenv_config_path=server/env/.env.test",
-    "heroku:local": "heroku local",
     "build:client": "cd client && npm run build",
     "build": "npm run build:client",
     "postinstall": "cd client && npm install && npm run build",
     "test": "jest",
-    "watch": "nodemon --exec \"heroku local\" --signal SIGTERM"
+    "watch": "nodemon -L --exec npm start"
   },
   "repository": {
     "type": "git",
@@ -32,6 +31,7 @@
     "express": "^4.16.2",
     "graphql": "^0.13.1",
     "graphql-date": "^1.0.3",
+    "graphql-playground-middleware-express": "^1.5.7",
     "graphql-subscriptions": "^0.5.8",
     "graphql-tools": "^2.21.0",
     "graphql-type-json": "^0.1.4",

@@ -95,7 +95,7 @@ describe('User', () => {
           },
           {
             headers: {
-              'x-token': token
+              authorization: `Bearer ${token}`
             }
           }
         );
@@ -145,7 +145,7 @@ describe('User', () => {
           },
           {
             headers: {
-              'x-token': token
+              authorization: `Bearer ${token}`
             }
           }
         );
@@ -574,7 +574,7 @@ describe('mutations', () => {
           },
           {
             headers: {
-              'x-token': token
+              authorization: `Bearer ${token}`
             }
           }
         );
@@ -625,7 +625,7 @@ describe('mutations', () => {
           },
           {
             headers: {
-              'x-token': token
+              authorization: `Bearer ${token}`
             }
           }
         );
@@ -672,7 +672,7 @@ describe('mutations', () => {
           },
           {
             headers: {
-              'x-token': token
+              authorization: `Bearer ${token}`
             }
           }
         );
@@ -719,7 +719,7 @@ describe('mutations', () => {
           },
           {
             headers: {
-              'x-token': token
+              authorization: `Bearer ${token}`
             }
           }
         );

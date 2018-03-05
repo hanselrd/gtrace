@@ -4,7 +4,9 @@ const cors = require('cors');
 const morgan = require('morgan');
 const http = require('http');
 const path = require('path');
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
+const { graphqlExpress } = require('apollo-server-express');
+const expressPlayground = require('graphql-playground-middleware-express')
+  .default;
 const { execute, subscribe } = require('graphql');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
 const { auth, models, schema, seeders } = require('./server');
@@ -17,7 +19,7 @@ app.use(cors());
 app.use(morgan('dev'));
 
 app.use(async (req, res, next) => {
-  const token = req.headers['x-token'];
+  const token = req.headers['authorization'];
   if (token) {
     try {
       req.user = await auth(token);
@@ -42,13 +44,14 @@ app.use(
 );
 
 if (process.env.NODE_ENV !== 'production') {
-  app.use(
-    '/graphiql',
-    graphiqlExpress({
-      endpointURL: '/graphql',
-      subscriptionsEndpoint: `ws://localhost:${port}/subscriptions`
-    })
-  );
+  // app.use(
+  //   '/graphiql',
+  //   graphiqlExpress({
+  //     endpointURL: '/graphql',
+  //     subscriptionsEndpoint: `ws://localhost:${port}/subscriptions`
+  //   })
+  // );
+  app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 }
 
 app.use(express.static(path.join(__dirname, 'client/build')));
@@ -74,10 +77,7 @@ models.sequelize
           subscribe,
           schema,
           onConnect: async (connectionParams, webSocket) => {
-            let token = connectionParams.token; // frontend
-            if (!token) {
-              token = webSocket.upgradeReq.headers['x-token']; // graphiql
-            }
+            let token = connectionParams['authorization'];
 
             if (token) {
               try {
@@ -103,7 +103,7 @@ models.sequelize
         },
         {
           server: wss,
-          path: '/subscriptions'
+          path: '/graphql'
         }
       );
 
