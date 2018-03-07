@@ -1,9 +1,9 @@
-module.exports = `
+export default `
   type Message {
-    id: Int!
+    id: ID!
     text: String!
     user: User!
-    createdAt: Date!
+    createdAt: DateTime!
   }
 
   type Query {
@@ -12,7 +12,7 @@ module.exports = `
   }
 
   type Mutation {
-    addMessage(text: String!): Response!
+    addMessage(text: String!): Message!
   }
 
   type Subscription {
