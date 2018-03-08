@@ -1,7 +1,10 @@
 import { LoginError, SignupError } from '../../errors';
-import { User } from '../../models';
+import { Message, User } from '../../models';
 
 export default {
+  User: {
+    messages: parent => Message.find({ where: { user: parent.id } })
+  },
   Query: {
     users: () => User.find(),
     user: (parent, { id }) => User.findOneById(id),

@@ -2,7 +2,7 @@ import { Entity, Column, OneToMany, BeforeInsert, BeforeUpdate } from 'typeorm';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import BaseModel from './BaseModel';
-import Friend from './Friend';
+import { Friend, Message } from './';
 
 @Entity()
 export default class User extends BaseModel {
@@ -19,6 +19,9 @@ export default class User extends BaseModel {
 
   @Column({ default: 'en' })
   language: string;
+
+  @OneToMany(type => Message, message => message.user)
+  messages: Promise<Message[]>;
 
   @BeforeInsert()
   @BeforeUpdate()
