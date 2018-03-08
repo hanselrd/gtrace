@@ -8,8 +8,8 @@
     "test-server": "ts-node -r dotenv/config server/src/index.ts dotenv_config_path=server/.env.test",
     "clean": "rm -rf build",
     "build:client": "cd client && npm install && npm run build",
-    "build:server": "npm run clean && tsc && cp -R server/src/graphql/types/*.graphql build/graphql/types/",
-    "build": "npm run build:server && npm run build:client",
+    "build:server": "npm run clean && tsc && cp -R server/src/graphql/types/*.graphql build/graphql/types",
+    "build": "npm run build:server && npm run build:client && cp -R client/build build/client",
     "postinstall": "npm run build",
     "test": "jest",
     "watch": "nodemon -L --exec ts-node -r dotenv/config server/src/index.ts dotenv_config_path=server/.env.dev"
