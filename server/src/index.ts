@@ -5,7 +5,7 @@ import { createConnection } from 'typeorm';
 import jwt from 'jsonwebtoken';
 import express from 'express';
 import schema from './graphql';
-import { Friend, Message, User } from './models';
+import { Friend, Message, Role, User } from './models';
 
 const options: Options = {
   port: +process.env.PORT || 4000,
@@ -31,7 +31,7 @@ const server = new GraphQLServer({
         const decoded = jwt.decode(token);
         if (decoded) {
           const { sub } = <any>decoded;
-          const user = await User.findOneById(sub);
+          const user = await User.findOneById(sub, { relations: ['role'] });
           jwt.verify(token, user.password + process.env.SECRET);
           return { ...req, user, pubsub };
         }
@@ -46,7 +46,7 @@ createConnection({
   url: process.env.DATABASE_URL,
   synchronize: true,
   logging: true,
-  entities: [Friend, Message, User]
+  entities: [Friend, Message, Role, User]
 }).then(() => {
   server.start(options, ({ port }) => {
     console.log(`Server is running on port ${port}`);

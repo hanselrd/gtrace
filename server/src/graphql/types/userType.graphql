@@ -4,6 +4,7 @@ type User {
   email: String!
   dob: Date!
   language: String!
+  role: Role
   messages: [Message!]
   friends: [User!]
   pendingFriends: [User!] @private
@@ -13,7 +14,7 @@ type User {
 type Query {
   users: [User!]
   user(id: ID!): User
-  currentUser: User @auth(roles: ["owner"])
+  currentUser: User @auth
 }
 
 type Mutation {

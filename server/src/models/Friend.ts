@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne } from 'typeorm';
 import BaseModel from './BaseModel';
-import User from './User';
+import { User } from './';
 
 @Entity()
 export default class Friend extends BaseModel {

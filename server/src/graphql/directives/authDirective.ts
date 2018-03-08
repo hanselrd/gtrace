@@ -1,15 +1,20 @@
-import { AuthenticationError } from '../../errors';
+import { AuthenticationError, PermissionError } from '../../errors';
 
 export default (next, src, { roles }, { user }) => {
   if (user) {
-    // check roles
-    // const expectedRoles = <string[]>(roles || []);
-    // if (
-    //   expectedRoles.length === 0 ||
-    //   expectedRoles.some(role => user.hasRole(role))
-    // ) {
-    return next();
-    // }
+    const expectedRoles = <string[]>(roles || []);
+    if (expectedRoles.length === 0) {
+      return next();
+    } else if (
+      user.role &&
+      expectedRoles.some(role => user.role.abbreviation === role)
+    ) {
+      return next();
+    } else {
+      throw new PermissionError({
+        message: `This action requires the following roles: [${roles}]`
+      });
+    }
   }
 
   throw new AuthenticationError();

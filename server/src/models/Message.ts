@@ -10,5 +10,5 @@ export default class Message extends BaseModel {
   @Column() userId: number;
 
   @ManyToOne(type => User)
-  user: Promise<User>;
+  user: User;
 }

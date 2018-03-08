@@ -7,11 +7,13 @@ type Message {
 
 type Query {
   messages: [Message!]
-  message(id: Int!): Message
+  message(id: ID!): Message
 }
 
 type Mutation {
   addMessage(text: String!): Message! @auth
+  # deleteMessage(id: ID!): Message! @auth(roles: ["admin", "mod"])
+  # deleteAllMessages:
 }
 
 type Subscription {
