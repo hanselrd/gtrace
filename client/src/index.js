@@ -23,7 +23,9 @@ export let wsClient = null;
 const wsClientOptions = {
   reconnect: true,
   connectionParams: () => ({
-    token: localStorage.getItem(process.env.REACT_APP_LOCAL_STORAGE_TOKEN_KEY)
+    authorization: localStorage.getItem(
+      process.env.REACT_APP_LOCAL_STORAGE_TOKEN_KEY
+    )
   })
 };
 
@@ -33,7 +35,7 @@ if (process.env.NODE_ENV === 'development') {
   });
 
   wsClient = new SubscriptionClient(
-    'ws://localhost:4000/subscriptions',
+    'ws://localhost:4000/graphql',
     wsClientOptions
   );
 } else if (process.env.NODE_ENV === 'production') {
@@ -42,7 +44,7 @@ if (process.env.NODE_ENV === 'development') {
   });
 
   wsClient = new SubscriptionClient(
-    'wss://traceapp.herokuapp.com/subscriptions',
+    'wss://traceapp.herokuapp.com/graphql',
     wsClientOptions
   );
 }
@@ -62,7 +64,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      'x-token': localStorage.getItem(
+      authorization: localStorage.getItem(
         process.env.REACT_APP_LOCAL_STORAGE_TOKEN_KEY
       )
     }

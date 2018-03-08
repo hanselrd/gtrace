@@ -1,4 +1,4 @@
-import { AuthenticationError, SystemError } from '../../errors';
+import { SystemError } from '../../errors';
 import { Message, User } from '../../models';
 
 export default {
@@ -18,12 +18,40 @@ export default {
       } catch (err) {
         throw new SystemError(err);
       }
+    },
+    deleteMessage: async (parent, { id }, { pubsub }) => {
+      try {
+        const message = await Message.removeById(id);
+        pubsub.publish('messageDeleted', { messageDeleted: id });
+        return id;
+      } catch (err) {
+        throw new SystemError(err);
+      }
+    },
+    deleteAllMessages: async (parent, args, { pubsub }) => {
+      try {
+        await Message.createQueryBuilder('message')
+          .delete()
+          .execute();
+        pubsub.publish('allMessagesDeleted', { allMessagesDeleted: true });
+        return true;
+      } catch (err) {
+        throw new SystemError(err);
+      }
     }
   },
   Subscription: {
     messageAdded: {
       subscribe: (parent, args, { pubsub }) =>
         pubsub.asyncIterator('messageAdded')
+    },
+    messageDeleted: {
+      subscribe: (parent, args, { pubsub }) =>
+        pubsub.asyncIterator('messageDeleted')
+    },
+    allMessagesDeleted: {
+      subscribe: (parent, args, { pubsub }) =>
+        pubsub.asyncIterator('allMessagesDeleted')
     }
   }
 };

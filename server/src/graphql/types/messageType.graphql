@@ -12,11 +12,12 @@ type Query {
 
 type Mutation {
   addMessage(text: String!): Message! @auth
-  # deleteMessage(id: ID!): Message! @auth(roles: ["admin", "mod"])
-  # deleteAllMessages:
+  deleteMessage(id: ID!): ID! @auth(roles: ["admin", "mod"])
+  deleteAllMessages: Boolean! @auth(roles: ["admin"])
 }
 
 type Subscription {
   messageAdded: Message! @auth
+  messageDeleted: ID! @auth
+  allMessagesDeleted: Boolean! @auth
 }
-
