@@ -1,0 +1,22 @@
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  dob: Date!
+  language: String!
+  messages: [Message!]
+  friends: [User!]
+  pendingFriends: [User!] @private
+  createdAt: DateTime!
+}
+
+type Query {
+  users: [User!]
+  user(id: ID!): User
+  currentUser: User @auth(roles: ["owner"])
+}
+
+type Mutation {
+  signup(name: String!, email: String!, password: String!, dob: Date!, language: String): Auth!
+  login(email: String!, password: String!): Auth!
+}

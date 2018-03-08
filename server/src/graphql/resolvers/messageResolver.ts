@@ -1,4 +1,4 @@
-import { AuthError, SystemError } from '../../errors';
+import { AuthenticationError, SystemError } from '../../errors';
 import { Message } from '../../models';
 
 export default {
@@ -8,16 +8,12 @@ export default {
   },
   Mutation: {
     addMessage: async (parent, args, { user, pubsub }) => {
-      if (!user) {
-        throw new AuthError();
-      }
-
       try {
         const message = await Message.create(args).save();
         pubsub.publish('messageAdded', { messageAdded: message });
         return message;
       } catch (err) {
-        throw new SystemError({ message: err.message });
+        throw new SystemError(err);
       }
     }
   },

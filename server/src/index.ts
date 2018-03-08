@@ -4,11 +4,11 @@ import { formatError } from 'apollo-errors';
 import { createConnection } from 'typeorm';
 import jwt from 'jsonwebtoken';
 import express from 'express';
-import schema from './schema';
+import schema from './graphql';
 import { Friend, Message, User } from './models';
-import { AuthError, SystemError } from './errors';
 
 const options: Options = {
+  port: +process.env.PORT || 4000,
   endpoint: '/graphql',
   subscriptions: '/graphql',
   playground: process.env.NODE_ENV !== 'production' ? '/playground' : false,
@@ -28,19 +28,14 @@ const server = new GraphQLServer({
     if (token) {
       try {
         token = token.replace('Bearer ', '');
-        console.log('token:', token);
         const decoded = jwt.decode(token);
-        if (!decoded) {
-          throw new AuthError({ message: 'Could not decode token' });
+        if (decoded) {
+          const { sub } = <any>decoded;
+          const user = await User.findOneById(sub);
+          jwt.verify(token, user.password + process.env.SECRET);
+          return { ...req, user, pubsub };
         }
-        const { sub } = <any>decoded;
-        const user = await User.findOneById(sub);
-        jwt.verify(token, user.password + process.env.SECRET);
-        return { ...req, user, pubsub };
-      } catch (err) {
-        console.error(err.message);
-        throw new AuthError({ message: err.message });
-      }
+      } catch (err) {}
     }
     return { ...req, pubsub };
   }
@@ -55,19 +50,5 @@ createConnection({
 }).then(() => {
   server.start(options, ({ port }) => {
     console.log(`Server is running on port ${port}`);
-  });
-
-  User.find().then(users => {
-    users.forEach(async user => {
-      if (user.id % 2 === 0) {
-        await Friend.create({
-          user1: user,
-          user2: users[0],
-          accepted: true
-        }).save();
-      } else if (user.id % 3 === 0) {
-        await Friend.create({ user1: user, user2: users[1] }).save();
-      }
-    });
   });
 });
