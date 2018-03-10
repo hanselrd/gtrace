@@ -3,8 +3,9 @@ import { Message, Role, User } from '../../models';
 
 export default {
   User: {
-    role: parent => Role.findOneById(parent.roleId),
-    messages: parent => Message.find({ where: { user: parent.id } })
+    role: parent => parent.role || Role.findOneById(parent.roleId),
+    messages: parent =>
+      parent.messages || Message.find({ where: { userId: parent.id } })
   },
   Query: {
     users: () => User.find(),

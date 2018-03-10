@@ -27,6 +27,9 @@ export default class User extends BaseModel {
   @Column({ default: 'en' })
   language: string;
 
+  @Column({ default: false })
+  online: boolean;
+
   @Column({ nullable: true })
   roleId: number;
 

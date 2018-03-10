@@ -4,6 +4,7 @@ type User {
   email: String!
   dob: Date!
   language: String!
+  online: Boolean!
   role: Role
   messages: [Message!]
   friends: [User!]

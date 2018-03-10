@@ -3,7 +3,7 @@ import { Message, User } from '../../models';
 
 export default {
   Message: {
-    user: parent => User.findOneById(parent.userId)
+    user: parent => parent.user || User.findOneById(parent.userId)
   },
   Query: {
     messages: () => Message.find(),
@@ -21,7 +21,7 @@ export default {
     },
     deleteMessage: async (parent, { id }, { pubsub }) => {
       try {
-        const message = await Message.removeById(id);
+        await Message.removeById(id);
         pubsub.publish('messageDeleted', { messageDeleted: id });
         return id;
       } catch (err) {

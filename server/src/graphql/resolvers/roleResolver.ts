@@ -3,7 +3,7 @@ import { Role, User } from '../../models';
 
 export default {
   Role: {
-    users: parent => User.find({ where: { role: parent.id } })
+    users: parent => parent.users || User.find({ where: { roleId: parent.id } })
   },
   Query: {
     roles: () => Role.find(),

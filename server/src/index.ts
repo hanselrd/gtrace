@@ -10,7 +10,20 @@ import { Friend, Message, Role, User } from './models';
 const options: Options = {
   port: +process.env.PORT || 4000,
   endpoint: '/graphql',
-  subscriptions: '/graphql',
+  subscriptions: {
+    path: '/graphql',
+    onConnect: async (connectionParams, webSocket) => ({
+      ...connectionParams,
+      webSocket
+    }),
+    onDisconnect: async webSocket => {
+      let user = <User>webSocket.user;
+      if (user) {
+        user.online = false;
+        await user.save();
+      }
+    }
+  },
   playground: process.env.NODE_ENV !== 'production' ? '/playground' : false,
   formatError
 };
@@ -33,6 +46,11 @@ const server = new GraphQLServer({
           const { sub } = <any>decoded;
           const user = await User.findOneById(sub, { relations: ['role'] });
           jwt.verify(token, user.password + process.env.SECRET);
+          if (req.connection) {
+            user.online = true;
+            await user.save();
+            req.connection.context.webSocket.user = user;
+          }
           return { ...req, user, pubsub };
         }
       } catch (err) {}
@@ -45,7 +63,7 @@ createConnection({
   type: 'postgres',
   url: process.env.DATABASE_URL,
   synchronize: true,
-  logging: true,
+  logging: process.env.NODE_ENV !== 'production',
   entities: [Friend, Message, Role, User]
 }).then(() => {
   server.start(options, ({ port }) => {
