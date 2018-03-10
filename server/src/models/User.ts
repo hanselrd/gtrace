@@ -6,6 +6,16 @@ import {
   BeforeInsert,
   BeforeUpdate
 } from 'typeorm';
+import {
+  IsAlphanumeric,
+  IsDate,
+  IsEmail,
+  IsIn,
+  Length,
+  MinLength,
+  MinDate,
+  MaxDate
+} from 'class-validator';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import BaseModel from './BaseModel';
@@ -14,17 +24,26 @@ import { Friend, Message, Role } from './';
 @Entity()
 export default class User extends BaseModel {
   @Column({ unique: true })
+  @Length(3, 25)
+  @IsAlphanumeric()
   name: string;
 
   @Column({ unique: true })
+  @IsEmail()
   email: string;
 
-  @Column() password: string;
+  @Column()
+  @MinLength(6)
+  password: string;
 
   @Column({ type: 'date' })
+  @MinDate(new Date('1900-01-01'))
+  @MaxDate(new Date())
+  @IsDate()
   dob: Date;
 
   @Column({ default: 'en' })
+  @IsIn(['en', 'es'])
   language: string;
 
   @Column({ default: false })
@@ -91,20 +110,4 @@ export default class User extends BaseModel {
       { expiresIn: '7d' }
     );
   }
-
-  // isOwner() {
-  //   return false;
-  // }
-
-  // isAdmin() {
-  //   return false;
-  // }
-
-  // isMod() {
-  //   return false;
-  // }
-
-  // isDev() {
-  //   return false;
-  // }
 }

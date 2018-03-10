@@ -1,4 +1,4 @@
-import { LoginError, SignupError } from '../../errors';
+import { LoginError, SignupError, UniqueKeyError } from '../../errors';
 import { Message, Role, User } from '../../models';
 
 export default {
@@ -14,12 +14,20 @@ export default {
   },
   Mutation: {
     signup: async (parent, args) => {
-      try {
-        const user = await User.create(args).save();
-        return { token: user.generateToken(), user };
-      } catch (err) {
-        throw new SignupError(err);
+      const user = await User.create(args);
+      const errors = await user.validate();
+      if (errors) {
+        throw new SignupError({ data: errors });
       }
+      try {
+        await user.save();
+      } catch (err) {
+        if (err instanceof UniqueKeyError) {
+          throw new SignupError(err);
+        }
+        throw err;
+      }
+      return { token: user.generateToken(), user };
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ where: { email } });
