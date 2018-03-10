@@ -4,3 +4,4 @@ export { default as NotFoundError } from './NotFoundError';
 export { default as PermissionError } from './PermissionError';
 export { default as SignupError } from './SignupError';
 export { default as SystemError } from './SystemError';
+export { default as UnhandledError } from './UnhandledError';
