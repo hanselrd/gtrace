@@ -13,7 +13,7 @@ export default {
     currentUser: (parent, args, { user }) => user
   },
   Mutation: {
-    signup: async (parent, args) => {
+    signup: async (parent, args, { pubsub }) => {
       const user = await User.create(args);
       const errors = await user.validate();
       if (errors) {
@@ -27,17 +27,27 @@ export default {
         }
         throw err;
       }
+      pubsub.publish('userAdded', { userAdded: user });
       return { token: user.generateToken(), user };
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ where: { email } });
       if (!user) {
-        throw new LoginError({ message: 'No user exists with that email' });
+        throw new LoginError({
+          data: { email: 'No user exists with that email' }
+        });
       }
       if (!await user.authenticate(password)) {
-        throw new LoginError({ message: 'Password is incorrect' });
+        throw new LoginError({
+          data: { password: 'Password is incorrect' }
+        });
       }
       return { token: user.generateToken(), user };
+    }
+  },
+  Subscription: {
+    userAdded: {
+      subscribe: (parent, args, { pubsub }) => pubsub.asyncIterator('userAdded')
     }
   }
 };

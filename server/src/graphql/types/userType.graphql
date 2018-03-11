@@ -22,3 +22,7 @@ type Mutation {
   signup(name: String!, email: String!, password: String!, dob: Date!, language: String): Auth!
   login(email: String!, password: String!): Auth!
 }
+
+type Subscription {
+  userAdded: User! @auth
+}

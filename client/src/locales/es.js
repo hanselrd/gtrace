@@ -3,6 +3,7 @@ export default {
   user: 'Usuario',
   userId: 'ID de usuario',
   name: 'Nombre',
+  dob: 'Fec.nac.',
   email: 'Correo electrónico',
   password: 'Contraseña',
   home: 'Inicio',

@@ -60,7 +60,7 @@ class App extends Component {
   }
 }
 
-const currentUserQuery = gql`
+const CURRENT_USER_QUERY = gql`
   query {
     currentUser {
       id
@@ -70,4 +70,8 @@ const currentUserQuery = gql`
   }
 `;
 
-export default compose(withRouter, graphql(currentUserQuery), withRedux)(App);
+export default compose(
+  withRouter,
+  graphql(CURRENT_USER_QUERY, { options: { errorPolicy: 'all' } }),
+  withRedux
+)(App);

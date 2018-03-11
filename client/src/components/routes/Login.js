@@ -11,22 +11,16 @@ const required = value => (value ? undefined : 'Required');
 
 class Login extends Component {
   onSubmit = async ({ email, password }) => {
-    const response = await this.props.login({
-      variables: { email, password }
-    });
-    const { status, payload, errors } = response.data.login;
-    if (status) {
-      const { token } = payload;
+    try {
+      const response = await this.props.mutate({
+        variables: { email, password }
+      });
+      const { token } = response.data.login;
       this.props.authSetToken({ token });
       this.props.client.resetStore();
       this.props.reset(); // clear form
-    } else {
-      // server-side errors
-      errors.map(error => {
-        throw new SubmissionError({
-          [error.path]: error.message
-        });
-      });
+    } catch (error) {
+      throw new SubmissionError(error.graphQLErrors[0].data);
     }
   };
 
@@ -64,21 +58,16 @@ class Login extends Component {
   }
 }
 
-const loginMutation = gql`
+const LOGIN_MUTATION = gql`
   mutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
-      status
-      payload
-      errors {
-        path
-        message
-      }
+      token
     }
   }
 `;
 
 export default compose(
-  graphql(loginMutation, { name: 'login' }),
+  graphql(LOGIN_MUTATION),
   withApollo,
   withRedux,
   reduxForm({ form: 'login', destroyOnUnmount: false })

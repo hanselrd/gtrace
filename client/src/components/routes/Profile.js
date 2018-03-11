@@ -19,7 +19,6 @@ class Profile extends Component {
       return <p>No user found</p>;
     }
 
-    const joined = new Date(user.createdAt);
     const options = { month: 'long', day: 'numeric', year: 'numeric' };
 
     return (
@@ -29,6 +28,10 @@ class Profile extends Component {
         </p>
         <p>
           {locales.name}: {user.name}
+        </p>
+        <p>
+          {locales.dob}:{' '}
+          {new Date(user.dob).toLocaleString(locales.getLanguage(), options)}
         </p>
         <p>
           {locales.email}: {user.email}
@@ -52,19 +55,23 @@ class Profile extends Component {
         </div>
         <p>
           {locales.joined}:{' '}
-          {joined.toLocaleString(locales.getLanguage(), options)}
+          {new Date(user.createdAt).toLocaleString(
+            locales.getLanguage(),
+            options
+          )}
         </p>
       </div>
     );
   }
 }
 
-const userByIdQuery = gql`
-  query($id: Int!) {
+const USER_BY_ID_QUERY = gql`
+  query($id: ID!) {
     user(id: $id) {
       id
       name
       email
+      dob
       language
       online
       role {
@@ -77,7 +84,7 @@ const userByIdQuery = gql`
   }
 `;
 
-export default graphql(userByIdQuery, {
+export default graphql(USER_BY_ID_QUERY, {
   options: ({ match }) => ({
     variables: { id: match.params.id }
   })

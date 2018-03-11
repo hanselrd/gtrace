@@ -26,16 +26,12 @@ class Chatbox extends Component {
 
   onSubmit = async ({ text }) => {
     this.props.reset();
-    const response = await this.props.mutate({
-      variables: { text }
-    });
-    const { status, errors } = response.data.addMessage;
-    if (!status) {
-      errors.map(error => {
-        throw new SubmissionError({
-          [error.path]: error.message
-        });
+    try {
+      await this.props.mutate({
+        variables: { text }
       });
+    } catch (error) {
+      throw new SubmissionError(error.graphQLErrors[0].data);
     }
   };
 
@@ -130,7 +126,7 @@ Chatbox.propTypes = {
   users: PropTypes.array.isRequired
 };
 
-const messagesQuery = gql`
+const MESSAGES_QUERY = gql`
   query {
     messages {
       id
@@ -144,20 +140,15 @@ const messagesQuery = gql`
   }
 `;
 
-const addMessageMutation = gql`
+const ADD_MESSAGE_MUTATION = gql`
   mutation($text: String!) {
     addMessage(text: $text) {
-      status
-      payload
-      errors {
-        path
-        message
-      }
+      id
     }
   }
 `;
 
-const messageAddedSubscription = gql`
+const MESSAGE_ADDED_SUBSCRIPTION = gql`
   subscription {
     messageAdded {
       id
@@ -172,12 +163,12 @@ const messageAddedSubscription = gql`
 `;
 
 export default compose(
-  graphql(messagesQuery, {
+  graphql(MESSAGES_QUERY, {
     props: props => ({
       ...props,
       subscribeToMessageAdded: params =>
         props.data.subscribeToMore({
-          document: messageAddedSubscription,
+          document: MESSAGE_ADDED_SUBSCRIPTION,
           updateQuery: (prev, { subscriptionData }) => {
             if (!subscriptionData) {
               return prev;
@@ -189,6 +180,6 @@ export default compose(
         })
     })
   }),
-  graphql(addMessageMutation),
+  graphql(ADD_MESSAGE_MUTATION),
   reduxForm({ form: 'chatbox', destroyOnUnmount: false })
 )(Chatbox);

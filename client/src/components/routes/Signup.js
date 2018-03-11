@@ -83,7 +83,7 @@ class Signup extends Component {
   }
 }
 
-const signupMutation = gql`
+const SIGNUP_MUTATION = gql`
   mutation(
     $name: String!
     $email: String!
@@ -107,7 +107,7 @@ const signupMutation = gql`
 `;
 
 export default compose(
-  graphql(signupMutation, { name: 'signup' }),
+  graphql(SIGNUP_MUTATION, { name: 'signup' }),
   withApollo,
   withRedux,
   reduxForm({ form: 'signup', destroyOnUnmount: false })

@@ -3,6 +3,7 @@ export default {
   user: 'User',
   userId: 'User ID',
   name: 'Name',
+  dob: 'Date of Birth',
   email: 'Email',
   password: 'Password',
   home: 'Home',

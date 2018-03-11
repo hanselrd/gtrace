@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { GraphQLServer, Options, PubSub } from 'graphql-yoga';
 import { formatError } from 'apollo-errors';
 import { createConnection } from 'typeorm';
+import path from 'path';
 import jwt from 'jsonwebtoken';
 import express from 'express';
 import schema from './graphql';
@@ -57,6 +58,15 @@ const server = new GraphQLServer({
     }
     return { ...req, pubsub };
   }
+});
+
+server.express.use(express.static(path.join(__dirname, 'client')));
+
+server.express.get('*', (req, res, next) => {
+  if (!server.options.playground || req.url !== server.options.playground) {
+    return res.sendFile(path.join(__dirname, 'client', 'index.html'));
+  }
+  return next();
 });
 
 createConnection({

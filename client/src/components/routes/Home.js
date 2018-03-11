@@ -45,7 +45,7 @@ class Home extends Component {
   }
 }
 
-const usersQuery = gql`
+const USERS_QUERY = gql`
   query {
     users {
       id
@@ -59,7 +59,7 @@ const usersQuery = gql`
   }
 `;
 
-const userAddedSubscription = gql`
+const USER_ADDED_SUBSCRIPTION = gql`
   subscription {
     userAdded {
       id
@@ -74,12 +74,12 @@ const userAddedSubscription = gql`
 `;
 
 export default compose(
-  graphql(usersQuery, {
+  graphql(USERS_QUERY, {
     props: props => ({
       ...props,
       subscribeToUserAdded: params =>
         props.data.subscribeToMore({
-          document: userAddedSubscription,
+          document: USER_ADDED_SUBSCRIPTION,
           updateQuery: (prev, { subscriptionData }) => {
             if (!subscriptionData.data) {
               return prev;
