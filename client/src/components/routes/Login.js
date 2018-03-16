@@ -4,6 +4,7 @@ import { Field, reduxForm, SubmissionError } from 'redux-form';
 import renderField from '../renderField';
 import { Link } from 'react-router-dom';
 import { withRedux } from '../../utils';
+import { wsClient } from '../../';
 import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -18,6 +19,7 @@ class Login extends Component {
       const { token } = response.data.login;
       this.props.authSetToken({ token });
       this.props.client.resetStore();
+      wsClient.close(true);
       this.props.reset(); // clear form
     } catch (error) {
       throw new SubmissionError(error.graphQLErrors[0].data);
