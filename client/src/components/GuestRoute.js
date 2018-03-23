@@ -5,7 +5,7 @@ import { withRedux } from '../utils';
 class GuestRoute extends Component {
   render() {
     const { auth } = this.props;
-    return !auth ? <Route {...this.props} /> : <Redirect to="/" />;
+    return !auth ? <Route {...this.props} /> : <Redirect to="/home" />;
   }
 }
 

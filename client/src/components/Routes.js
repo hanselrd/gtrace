@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { /*Route,*/ Switch, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import Scroll from 'react-scroll';
 import AuthRoute from './AuthRoute';
 import GuestRoute from './GuestRoute';
+import Landing from './routes/Landing';
 import Home from './routes/Home';
 import Login from './routes/Login';
 import Signup from './routes/Signup';
@@ -18,7 +19,8 @@ class Routes extends Component {
   render() {
     return (
       <Switch>
-        <AuthRoute exact path="/" component={Home} />
+        <Route exact path="/" component={Landing} />
+        <AuthRoute exact path="/home" component={Home} />
         <GuestRoute exact path="/login" component={Login} />
         <GuestRoute exact path="/signup" component={Signup} />
         <AuthRoute exact path="/profile/:id" component={Profile} />

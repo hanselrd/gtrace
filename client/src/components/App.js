@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import '../styles/App.css';
+import './App.css';
+import { Container } from 'semantic-ui-react';
 import { NavLink, withRouter } from 'react-router-dom';
 import { withRedux } from '../utils';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import Aux from 'react-aux';
 import Routes from './Routes';
+import Header from './Header';
 import Footer from './Footer';
 
 class App extends Component {
@@ -26,7 +28,7 @@ class App extends Component {
     const { auth, data: { currentUser } } = this.props;
     return (
       <div className="App">
-        <ul>
+        {/* <ul>
           {auth && (
             <li>
               <NavLink to="/">Home</NavLink>
@@ -51,9 +53,11 @@ class App extends Component {
               </li>
             )}
         </ul>
-        <hr />
-        <Routes />
-        <hr />
+        <hr /> */}
+        <Header user={currentUser} />
+        <Container text className="App-container">
+          <Routes />
+        </Container>
         <Footer />
       </div>
     );

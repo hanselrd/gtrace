@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Label } from 'semantic-ui-react';
+import { Grid, Label } from 'semantic-ui-react';
+import Aux from 'react-aux';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import locales from '../../locales';
@@ -23,43 +24,55 @@ class Profile extends Component {
 
     return (
       <div className="Profile">
-        <p>
-          {locales.userId}: {user.id}
-        </p>
-        <p>
-          {locales.name}: {user.name}
-        </p>
-        <p>
-          {locales.dob}:{' '}
-          {new Date(user.dob).toLocaleString(locales.getLanguage(), options)}
-        </p>
-        <p>
-          {locales.email}: {user.email}
-        </p>
-        <p>
-          {locales.language}:{' '}
-          {user.language === 'en'
-            ? locales.english
-            : user.language === 'es' ? locales.spanish : null}
-        </p>
-        <p>
-          {locales.online}: {user.online ? locales.yes : locales.no}
-        </p>
-        <div>
-          {locales.role}:{' '}
-          {user.role && (
-            <Label key={user.role.id} color={user.role.color}>
-              {user.role.abbreviation}
-            </Label>
-          )}
-        </div>
-        <p>
-          {locales.joined}:{' '}
-          {new Date(user.createdAt).toLocaleString(
-            locales.getLanguage(),
-            options
-          )}
-        </p>
+        <Grid stackable>
+          <Grid.Row>
+            <Grid.Column width={8} textAlign="center">
+              <h2>{user.name}</h2>
+              <img
+                src="https://via.placeholder.com/200x200"
+                alt="Profile Picture"
+              />
+            </Grid.Column>
+            <Grid.Column width={8} verticalAlign="middle">
+              <p>
+                {locales.dob}:{' '}
+                {new Date(user.dob).toLocaleString(
+                  locales.getLanguage(),
+                  options
+                )}
+              </p>
+              <p>
+                {locales.email}: {user.email}
+              </p>
+              <p>
+                {locales.language}:{' '}
+                {user.language === 'en'
+                  ? locales.english
+                  : user.language === 'es' ? locales.spanish : null}
+              </p>
+              <p>
+                {locales.online}: {user.online ? locales.yes : locales.no}
+              </p>
+              <div>
+                {user.role && (
+                  <Aux>
+                    {locales.role}:{' '}
+                    <Label key={user.role.id} color={user.role.color}>
+                      {user.role.abbreviation}
+                    </Label>
+                  </Aux>
+                )}
+              </div>
+              <p>
+                {locales.joined}:{' '}
+                {new Date(user.createdAt).toLocaleString(
+                  locales.getLanguage(),
+                  options
+                )}
+              </p>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     );
   }

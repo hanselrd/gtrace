@@ -162,7 +162,7 @@ export default compose(
       } catch (error) {
         setSubmitting(false);
         // server-side errors
-        Object.keys(error.graphQLErrors[0].data).map(key => {
+        Object.keys(error.graphQLErrors[0].data).forEach(key => {
           console.log(error.graphQLErrors[0].data[key][0]);
           setFieldError(key, error.graphQLErrors[0].data[key][0]);
         });
