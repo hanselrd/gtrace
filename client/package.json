@@ -31,7 +31,8 @@
     "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.2.14",
     "semantic-ui-react": "^0.78.2",
-    "subscriptions-transport-ws": "^0.9.6"
+    "subscriptions-transport-ws": "^0.9.6",
+    "yup": "^0.24.1"
   },
   "scripts": {
     "start": "react-scripts start",

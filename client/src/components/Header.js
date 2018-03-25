@@ -3,7 +3,7 @@ import { Container, Dropdown, Icon, Menu, Responsive } from 'semantic-ui-react';
 import { Link, NavLink } from 'react-router-dom';
 import Aux from 'react-aux';
 import PropTypes from 'prop-types';
-import locales from '../locales';
+// import locales from '../locales';
 
 class Header extends Component {
   render() {

@@ -28,10 +28,7 @@ class Profile extends Component {
           <Grid.Row>
             <Grid.Column width={8} textAlign="center">
               <h2>{user.name}</h2>
-              <img
-                src="https://via.placeholder.com/200x200"
-                alt="Profile Picture"
-              />
+              <img src="https://via.placeholder.com/200x200" alt="profile" />
             </Grid.Column>
             <Grid.Column width={8} verticalAlign="middle">
               <p>

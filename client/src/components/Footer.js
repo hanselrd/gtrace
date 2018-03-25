@@ -1,14 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Button,
-  Container,
-  Divider,
-  Flag,
-  Grid,
-  Header,
-  List,
-  Segment
-} from 'semantic-ui-react';
+import { Container, List, Segment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 class Footer extends Component {
@@ -47,9 +38,6 @@ class Footer extends Component {
             </List>
           </Container>
         </Segment>
-        {/* <p>
-          &copy; Copyright {date.getFullYear()} <strong>Trace</strong>
-        </p> */}
       </div>
     );
   }

@@ -9,38 +9,18 @@ import {
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { withFormik } from 'formik';
+import yup from 'yup';
 import { withRedux } from '../../utils';
 import { wsClient } from '../../';
 import { graphql, withApollo, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
-const options = [
+const languageOptions = [
   { key: 'en', text: 'English', value: 'en' },
   { key: 'es', text: 'Spanish', value: 'es' }
 ];
 
 class Signup extends Component {
-  // onSubmit = async ({ name, email, password, language }) => {
-  //   const response = await this.props.signup({
-  //     variables: { name, email, password, language }
-  //   });
-  //   const { status, payload, errors } = response.data.signup;
-  //   if (status) {
-  //     const { token } = payload;
-  //     this.props.authSetToken({ token });
-  //     this.props.client.resetStore();
-  //     wsClient.close(true);
-  //     this.props.reset(); // clear form
-  //   } else {
-  //     // server-side errors
-  //     // errors.map(error => {
-  //     //   throw new SubmissionError({
-  //     //     [error.path]: error.message
-  //     //   });
-  //     // });
-  //   }
-  // };
-
   render() {
     const {
       values,
@@ -49,7 +29,9 @@ class Signup extends Component {
       handleChange,
       handleBlur,
       handleSubmit,
-      isSubmitting
+      isSubmitting,
+      setFieldValue,
+      setFieldTouched
     } = this.props;
     return (
       <div className="Signup">
@@ -65,6 +47,10 @@ class Signup extends Component {
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
+              {touched.name &&
+                errors.name && (
+                  <label style={{ fontSize: '0.8em' }}>{errors.name}</label>
+                )}
             </Form.Field>
             <Form.Field error={touched.email && !!errors.email}>
               <label>Email</label>
@@ -76,6 +62,10 @@ class Signup extends Component {
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
+              {touched.email &&
+                errors.email && (
+                  <label style={{ fontSize: '0.8em' }}>{errors.email}</label>
+                )}
             </Form.Field>
             <Form.Field error={touched.password && !!errors.password}>
               <label>Password</label>
@@ -87,6 +77,38 @@ class Signup extends Component {
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
+              {touched.password &&
+                errors.password && (
+                  <label style={{ fontSize: '0.8em' }}>{errors.password}</label>
+                )}
+            </Form.Field>
+            <Form.Field error={touched.dob && !!errors.dob}>
+              <label>Date of Birth</label>
+              <Input
+                name="dob"
+                placeholder="yyyy-mm-dd"
+                value={values.dob}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              {touched.dob &&
+                errors.dob && (
+                  <label style={{ fontSize: '0.8em' }}>{errors.dob}</label>
+                )}
+            </Form.Field>
+            <Form.Field error={touched.language && !!errors.language}>
+              <label>Language</label>
+              <Select
+                name="language"
+                options={languageOptions}
+                value={values.language}
+                onChange={(e, { name, value }) => setFieldValue(name, value)}
+                onBlur={(e, { name, value }) => setFieldTouched(name, value)}
+              />
+              {touched.language &&
+                errors.language && (
+                  <label style={{ fontSize: '0.8em' }}>{errors.language}</label>
+                )}
             </Form.Field>
             <Button primary type="submit" disabled={isSubmitting}>
               Submit
@@ -130,22 +152,53 @@ export default compose(
       name: '',
       email: '',
       password: '',
-      dob: '1999-09-09',
+      dob: '',
       language: 'en'
     }),
-    validate: (values, props) => {
-      const errors = {};
-      if (!values.name) {
-        errors.name = 'Required';
-      }
-      if (!values.email) {
-        errors.email = 'Required';
-      }
-      if (!values.password) {
-        errors.password = 'Required';
-      }
-      return errors;
-    },
+    validationSchema: yup.object().shape({
+      name: yup
+        .string()
+        .required()
+        .min(3)
+        .max(25)
+        .matches(
+          /^[a-z0-9]+$/i,
+          'name must only contain alphanumeric characters'
+        ),
+      email: yup
+        .string()
+        .required()
+        .email(),
+      password: yup
+        .string()
+        .required()
+        .min(6),
+      dob: yup
+        .string()
+        .required()
+        .matches(/^\d{4}-\d{2}-\d{2}$/, '${path} must be in yyyy-mm-dd format')
+        .test(
+          'is valid date',
+          '${path} is not a valid date',
+          value => !isNaN(Date.parse(value))
+        )
+        .test(
+          'is later than 1900-01-01',
+          '${path} must be later than 1900-01-01',
+          value => Date.parse(value) > Date.parse('1900-01-01')
+        )
+        .test(
+          'is earlier than today',
+          `\${path} must be earlier than ${new Date()
+            .toISOString()
+            .slice(0, 10)}`,
+          value => Date.parse(value) < Date.now()
+        ),
+      language: yup
+        .string()
+        .required()
+        .oneOf(['en', 'es'])
+    }),
     handleSubmit: async (
       { name, email, password, dob, language },
       { props, setSubmitting, setFieldError }
@@ -161,16 +214,10 @@ export default compose(
         wsClient.close(true);
       } catch (error) {
         setSubmitting(false);
-        // server-side errors
         Object.keys(error.graphQLErrors[0].data).forEach(key => {
           console.log(error.graphQLErrors[0].data[key][0]);
           setFieldError(key, error.graphQLErrors[0].data[key][0]);
         });
-        // errors.map(error => {
-        //   // throw new SubmissionError({
-        //   //   [error.path]: error.message
-        //   // });
-        // });
       }
     }
   })

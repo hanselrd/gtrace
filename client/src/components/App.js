@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Container } from 'semantic-ui-react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { withRedux } from '../utils';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
-import Aux from 'react-aux';
 import Routes from './Routes';
 import Header from './Header';
-import Footer from './Footer';
+// import Footer from './Footer';
 
 class App extends Component {
   constructor(props) {
@@ -25,40 +24,14 @@ class App extends Component {
   }
 
   render() {
-    const { auth, data: { currentUser } } = this.props;
+    const { data: { currentUser } } = this.props;
     return (
       <div className="App">
-        {/* <ul>
-          {auth && (
-            <li>
-              <NavLink to="/">Home</NavLink>
-            </li>
-          )}
-          {!auth && (
-            <Aux>
-              <li>
-                <NavLink to="/login">Log in</NavLink>
-              </li>
-              <li>
-                <NavLink to="/signup">Sign up</NavLink>
-              </li>
-            </Aux>
-          )}
-          {auth &&
-            currentUser && (
-              <li>
-                <NavLink to={'/profile/' + currentUser.id}>
-                  {currentUser.name}
-                </NavLink>
-              </li>
-            )}
-        </ul>
-        <hr /> */}
         <Header user={currentUser} />
         <Container text className="App-container">
           <Routes />
         </Container>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     );
   }
