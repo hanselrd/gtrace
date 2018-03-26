@@ -6,6 +6,7 @@ import path from 'path';
 import jwt from 'jsonwebtoken';
 import express from 'express';
 import schema from './graphql';
+import seeder from './seeders';
 import { Friend, Message, Role, User } from './models';
 
 const options: Options = {
@@ -75,7 +76,17 @@ createConnection({
   synchronize: true,
   logging: process.env.NODE_ENV !== 'production',
   entities: [Friend, Message, Role, User]
-}).then(() => {
+}).then(async () => {
+  if ((await User.find()).length === 0) {
+    await seeder();
+  } else {
+    await User.createQueryBuilder('user')
+      .update()
+      .set({ online: false })
+      .where('online = true')
+      .execute();
+  }
+
   server.start(options, ({ port }) => {
     console.log(`Server is running on port ${port}`);
   });
