@@ -1,5 +1,6 @@
 import { createAction, createReducer, Action } from 'redux-act';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
+import * as apollo from '@app/core/apollo';
 
 const authTokenKey = 'trace:auth';
 
@@ -12,7 +13,9 @@ export const authActions = {
 export const authServices = {
   getAuthToken: () => localStorage.getItem(authTokenKey),
   setAuthToken: (auth: string) => localStorage.setItem(authTokenKey, auth),
-  unsetAuthToken: () => localStorage.removeItem(authTokenKey)
+  unsetAuthToken: () => localStorage.removeItem(authTokenKey),
+  resetApolloClient: () => apollo.client.resetStore(),
+  resetApolloSubscriptionClient: () => apollo.subscriptionClient.close(true)
 };
 
 export const authSagas = {
@@ -23,10 +26,18 @@ export const authSagas = {
     }
   },
   login: function*(action: Action<string>) {
-    yield all([call(authServices.setAuthToken, action.payload)]);
+    yield all([
+      call(authServices.setAuthToken, action.payload),
+      call(authServices.resetApolloClient),
+      call(authServices.resetApolloSubscriptionClient)
+    ]);
   },
   logout: function*(action: Action<null>) {
-    yield all([call(authServices.unsetAuthToken)]);
+    yield all([
+      call(authServices.unsetAuthToken),
+      call(authServices.resetApolloClient),
+      call(authServices.resetApolloSubscriptionClient)
+    ]);
   }
 };
 
