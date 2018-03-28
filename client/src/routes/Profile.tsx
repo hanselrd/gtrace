@@ -2,7 +2,7 @@ import * as React from 'react';
 import { graphql } from 'react-apollo';
 import { RouteComponentProps } from 'react-router-dom';
 import { Grid, Label } from 'semantic-ui-react';
-import Aux from '@app/utils/Aux';
+import Void from '@app/utils/Void';
 import locale from '@app/core/locale';
 import USER_QUERY, {
   UserQueryProps,
@@ -59,7 +59,7 @@ class Profile extends React.Component<ProfileProps> {
               </p>
               <p>
                 {user.role && (
-                  <Aux>
+                  <Void>
                     {locale.role}:{' '}
                     <Label
                       as="span"
@@ -68,7 +68,7 @@ class Profile extends React.Component<ProfileProps> {
                     >
                       {user.role.abbreviation}
                     </Label>
-                  </Aux>
+                  </Void>
                 )}
               </p>
               <p>

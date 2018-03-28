@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Container, Dropdown, Icon, Menu, Responsive } from 'semantic-ui-react';
-import Aux from '@app/utils/Aux';
+import Void from '@app/utils/Void';
 import { authActions } from '@app/ducks/auth';
 import { localeActions } from '@app/ducks/locale';
 import locale from '@app/core/locale';
@@ -44,7 +44,7 @@ class Header extends React.Component<HeaderProps> {
           }}
         >
           <Container>
-            <Responsive as={Aux} maxWidth={Responsive.onlyTablet.maxWidth}>
+            <Responsive as={Void} maxWidth={Responsive.onlyTablet.maxWidth}>
               <Dropdown item icon={<Icon name="sidebar" size="large" />}>
                 <Dropdown.Menu>
                   <Dropdown.Header>{locale.language}</Dropdown.Header>
@@ -52,7 +52,7 @@ class Header extends React.Component<HeaderProps> {
                     {locale.getLanguage().toUpperCase()}
                   </Dropdown.Item>
                   {user && (
-                    <Aux>
+                    <Void>
                       <Dropdown.Header>{locale.navigation}</Dropdown.Header>
                       <Dropdown.Item as={NavLink} to="/home">
                         {locale.home}
@@ -63,12 +63,12 @@ class Header extends React.Component<HeaderProps> {
                       <Dropdown.Item as={NavLink} to="/games">
                         {locale.games}
                       </Dropdown.Item>
-                    </Aux>
+                    </Void>
                   )}
                 </Dropdown.Menu>
               </Dropdown>
             </Responsive>
-            <Responsive as={Aux} minWidth={Responsive.onlyComputer.minWidth}>
+            <Responsive as={Void} minWidth={Responsive.onlyComputer.minWidth}>
               <Menu.Item onClick={this.onLanguageClick}>
                 {locale.getLanguage().toUpperCase()}
               </Menu.Item>
@@ -80,7 +80,7 @@ class Header extends React.Component<HeaderProps> {
               </span>
             </Menu.Item>
             {user && (
-              <Responsive as={Aux} minWidth={Responsive.onlyComputer.minWidth}>
+              <Responsive as={Void} minWidth={Responsive.onlyComputer.minWidth}>
                 <Menu.Item as={NavLink} to="/home">
                   {locale.home}
                 </Menu.Item>
@@ -94,18 +94,18 @@ class Header extends React.Component<HeaderProps> {
             )}
             <Menu.Menu position="right">
               {!user && (
-                <Aux>
+                <Void>
                   <Menu.Item as={NavLink} to="/login">
                     {locale.login}
                   </Menu.Item>
                   <Menu.Item as={NavLink} to="/signup">
                     {locale.signup}
                   </Menu.Item>
-                </Aux>
+                </Void>
               )}
               {user && (
-                <Aux>
-                  <Responsive as={Aux} {...Responsive.onlyMobile}>
+                <Void>
+                  <Responsive as={Void} {...Responsive.onlyMobile}>
                     <Dropdown
                       item
                       icon={<Icon name="user outline" size="large" />}
@@ -125,7 +125,7 @@ class Header extends React.Component<HeaderProps> {
                     </Dropdown>
                   </Responsive>
                   <Responsive
-                    as={Aux}
+                    as={Void}
                     minWidth={Responsive.onlyTablet.minWidth}
                   >
                     <Dropdown item text={user.name}>
@@ -142,7 +142,7 @@ class Header extends React.Component<HeaderProps> {
                       </Dropdown.Menu>
                     </Dropdown>
                   </Responsive>
-                </Aux>
+                </Void>
               )}
             </Menu.Menu>
           </Container>
