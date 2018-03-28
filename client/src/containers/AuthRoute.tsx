@@ -7,7 +7,7 @@ import ReturnType from '@app/utils/ReturnType';
 const mapStateToProps = (state: RootState) => state.auth;
 const dummy = ReturnType(mapStateToProps);
 
-export type AuthRouteProps = Readonly<{}> & typeof dummy;
+export type AuthRouteProps = typeof dummy;
 
 const AuthRoute: React.SFC<AuthRouteProps> = props =>
   props.auth ? <Route {...props} /> : <Redirect to="/login" />;

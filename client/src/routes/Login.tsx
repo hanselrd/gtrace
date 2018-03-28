@@ -12,6 +12,7 @@ import {
 } from 'semantic-ui-react';
 import { withFormik, FormikProps } from 'formik';
 import yup from 'yup';
+import FieldError from '@app/components/FieldError';
 import { authActions } from '@app/ducks/auth';
 import locale from '@app/core/locale';
 import LOGIN_MUTATION, {
@@ -34,9 +35,7 @@ const Login: React.SFC<LoginProps> = ({
   handleChange,
   handleBlur,
   handleSubmit,
-  isSubmitting,
-  setFieldValue,
-  setFieldTouched
+  isSubmitting
 }) => (
   <div>
     <Segment inverted>
@@ -56,10 +55,7 @@ const Login: React.SFC<LoginProps> = ({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          {touched.email &&
-            errors.email && (
-              <label style={{ fontSize: '0.8em' }}>{errors.email}</label>
-            )}
+          <FieldError touched={touched.email} error={errors.email} />
         </Form.Field>
         <Form.Field error={touched.password && !!errors.password}>
           <Form.Input
@@ -72,10 +68,7 @@ const Login: React.SFC<LoginProps> = ({
             onChange={handleChange}
             onBlur={handleBlur}
           />
-          {touched.password &&
-            errors.password && (
-              <label style={{ fontSize: '0.8em' }}>{errors.password}</label>
-            )}
+          <FieldError touched={touched.password} error={errors.password} />
         </Form.Field>
         <Button primary type="submit" disabled={isSubmitting}>
           {locale.submit}
@@ -92,7 +85,7 @@ export default compose(
   graphql(LOGIN_MUTATION),
   connect(null, mapDispatchToProps),
   withFormik<LoginProps, LoginMutationVariables>({
-    mapPropsToValues: props => ({ email: '', password: '' }),
+    mapPropsToValues: () => ({ email: '', password: '' }),
     validationSchema: yup.object().shape({
       email: yup
         .string()

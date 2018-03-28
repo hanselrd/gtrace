@@ -13,6 +13,7 @@ import Home from '@app/routes/Home';
 import Chat from '@app/routes/Chat';
 import Profile from '@app/routes/Profile';
 import Login from '@app/routes/Login';
+import Signup from '@app/routes/Signup';
 import NotFound from '@app/routes/NotFound';
 
 export type RoutesProps = RouteComponentProps<any>;
@@ -32,6 +33,7 @@ class Routes extends React.Component<RoutesProps> {
         <AuthRoute exact path="/chat" component={Chat} />
         <AuthRoute exact path="/profile/:id" component={Profile} />
         <GuestRoute exact path="/login" component={Login} />
+        <GuestRoute exact path="/signup" component={Signup} />
         <Route path="/" component={NotFound} />
       </Switch>
     );

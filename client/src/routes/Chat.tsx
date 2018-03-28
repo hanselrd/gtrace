@@ -43,7 +43,7 @@ class Chat extends React.Component<ChatProps> {
         const {
           messageAdded
         }: MessageAddedSubscriptionData = subscriptionData.data;
-        return { ...prev, messages: [...prev.messages, messageAdded] };
+        return { ...prev, messages: [messageAdded, ...prev.messages] };
       }
     });
   }
@@ -102,41 +102,44 @@ class Chat extends React.Component<ChatProps> {
             id="containerElement"
           >
             <div>
-              {messages.map(message => (
-                <Comment key={message.id}>
-                  <Comment.Content>
-                    <Comment.Author
-                      as={Link}
-                      to={'/profile/' + message.user.id}
-                    >
-                      <Label
-                        circular
-                        color={
-                          message.user.role
-                            ? message.user.role.color
-                            : (null as any)
-                        }
-                        size="small"
+              {messages
+                .slice()
+                .reverse()
+                .map(message => (
+                  <Comment key={message.id}>
+                    <Comment.Content>
+                      <Comment.Author
+                        as={Link}
+                        to={'/profile/' + message.user.id}
                       >
-                        {message.user.name}
-                        {message.user.role && (
-                          <Label.Detail>
-                            {message.user.role.abbreviation}
-                          </Label.Detail>
-                        )}
-                      </Label>
-                    </Comment.Author>
-                    <Comment.Metadata>
-                      <div className="Chat-metadata">
-                        {this.localizeCreatedAt(message.createdAt)}
-                      </div>
-                    </Comment.Metadata>
-                    <Comment.Text>
-                      <span className="Chat-text">{message.text}</span>
-                    </Comment.Text>
-                  </Comment.Content>
-                </Comment>
-              ))}
+                        <Label
+                          circular
+                          color={
+                            message.user.role
+                              ? message.user.role.color
+                              : (null as any)
+                          }
+                          size="small"
+                        >
+                          {message.user.name}
+                          {message.user.role && (
+                            <Label.Detail>
+                              {message.user.role.abbreviation}
+                            </Label.Detail>
+                          )}
+                        </Label>
+                      </Comment.Author>
+                      <Comment.Metadata>
+                        <div className="Chat-metadata">
+                          {this.localizeCreatedAt(message.createdAt)}
+                        </div>
+                      </Comment.Metadata>
+                      <Comment.Text>
+                        <span className="Chat-text">{message.text}</span>
+                      </Comment.Text>
+                    </Comment.Content>
+                  </Comment>
+                ))}
               <Scroll.Element name="newestMessage" />
             </div>
           </Comment.Group>
