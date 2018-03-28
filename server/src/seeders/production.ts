@@ -9,7 +9,7 @@ const newRole = (name: string, abbreviation: string, color: string) =>
 
 export default async () => {
   const bot = await newRole('bot', 'bot', 'orange');
-  const owner = await newRole('owner', 'owner', 'black');
+  const owner = await newRole('owner', 'owner', 'brown');
   const admin = await newRole('administrator', 'admin', 'red');
   const mod = await newRole('moderator', 'mod', 'blue');
 

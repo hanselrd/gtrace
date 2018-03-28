@@ -20,11 +20,11 @@ class Profile extends React.Component<ProfileProps> {
   render() {
     const { data: { loading, user } } = this.props;
     if (loading) {
-      return <p>Loading...</p>;
+      return <p>{locale.loading}...</p>;
     }
 
     if (!user) {
-      return <p>No user found</p>;
+      return <p>{locale.notFound}</p>;
     }
 
     const dateFormat = { month: 'long', day: 'numeric', year: 'numeric' };

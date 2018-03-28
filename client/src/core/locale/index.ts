@@ -3,6 +3,7 @@ import en from './en';
 import es from './es';
 
 export interface IStrings extends LocalizedStringsMethods {
+  notFound: string;
   login: string;
   logout: string;
   signup: string;

@@ -1,4 +1,5 @@
 export default {
+  notFound: 'No fue encontrado',
   login: 'Iniciar sesión',
   logout: 'Cerrar sesión',
   signup: 'Registrarte',

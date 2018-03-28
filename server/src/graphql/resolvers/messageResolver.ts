@@ -6,7 +6,7 @@ export default {
     user: parent => parent.user || User.findOneById(parent.userId)
   },
   Query: {
-    messages: () => Message.find(),
+    messages: () => Message.find({ order: { id: 'DESC' }, take: 10 }),
     message: (parent, { id }) => Message.findOneById(id)
   },
   Mutation: {

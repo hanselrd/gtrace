@@ -8,6 +8,10 @@ export default gql`
       user {
         id
         name
+        role {
+          abbreviation
+          color
+        }
       }
       createdAt
     }
@@ -21,6 +25,10 @@ export type MessageAddedSubscriptionData = {
     user: {
       id: string;
       name: string;
+      role: {
+        abbreviation: string;
+        color: string;
+      };
     };
     createdAt: string;
   };

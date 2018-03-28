@@ -112,16 +112,15 @@ export default compose(
           const response = await props.mutate({
             variables: { email, password }
           });
-          setSubmitting(false);
           const { token } = response.data.login;
           props.authLogin(token);
         } catch (error) {
-          setSubmitting(false);
           Object.keys(error.graphQLErrors[0].data).forEach(key =>
             setFieldError(key, error.graphQLErrors[0].data[key])
           );
         }
       }
+      setSubmitting(false);
     }
   })
 )(Login);

@@ -9,6 +9,10 @@ export default gql`
       user {
         id
         name
+        role {
+          abbreviation
+          color
+        }
       }
       createdAt
     }
@@ -16,15 +20,21 @@ export default gql`
 `;
 
 export type MessagesQueryData = {
-  messages: {
-    id: string;
-    text: string;
-    user: {
+  messages: [
+    {
       id: string;
-      name: string;
-    };
-    createdAt: string;
-  };
+      text: string;
+      user: {
+        id: string;
+        name: string;
+        role: {
+          abbreviation: string;
+          color: string;
+        };
+      };
+      createdAt: string;
+    }
+  ];
 };
 
 export type MessagesQueryProps = ChildDataProps<{}, MessagesQueryData>;
