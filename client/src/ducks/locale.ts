@@ -1,5 +1,5 @@
 import { createAction, createReducer, Action } from 'redux-act';
-import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { all, call, put, takeLatest } from 'redux-saga/effects';
 import locale from '@app/core/locale';
 
 const langTokenKey = 'trace:lang';
@@ -36,8 +36,8 @@ export const localeSagas = {
 
 export const localeSaga = function*() {
   yield all([
-    takeEvery(localeActions.start.getType(), localeSagas.start),
-    takeEvery(localeActions.change.getType(), localeSagas.change)
+    takeLatest(localeActions.start.getType(), localeSagas.start),
+    takeLatest(localeActions.change.getType(), localeSagas.change)
   ]);
 };
 

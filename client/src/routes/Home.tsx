@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { graphql, compose } from 'react-apollo';
 import { Button } from 'semantic-ui-react';
 import { RootState } from '@app/ducks';
-import { authActions, AuthState } from '@app/ducks/auth';
-import { localeActions, LocaleState } from '@app/ducks/locale';
+import { authActions } from '@app/ducks/auth';
+import { localeActions } from '@app/ducks/locale';
+import ReturnType from '@app/utils/ReturnType';
 import locale from '@app/core/locale';
 import LOGIN_MUTATION, {
   LoginMutationProps
@@ -12,14 +13,24 @@ import LOGIN_MUTATION, {
 
 const logo = require('@app/images/logo.png');
 
-export interface HomeProps extends LoginMutationProps {
-  authLogin: typeof authActions.login;
-  authLogout: typeof authActions.logout;
-  localeChange: typeof localeActions.change;
-}
+const mapStateToProps = (state: RootState) => ({
+  ...state.auth,
+  ...state.locale
+});
+const dummy = ReturnType(mapStateToProps);
 
-const Home: React.SFC<HomeProps & AuthState & LocaleState> = props => (
-  <div className="Home">
+const mapDispatchToProps = {
+  authLogin: authActions.login,
+  authLogout: authActions.logout,
+  localeChange: localeActions.change
+};
+
+export type HomeProps = LoginMutationProps &
+  typeof dummy &
+  typeof mapDispatchToProps;
+
+const Home: React.SFC<HomeProps> = props => (
+  <div>
     <img src={logo} alt="logo" width={100} />
     <p>Current locale: {props.lang}</p>
     <p>Auth: {JSON.stringify(props.auth)}</p>
@@ -61,17 +72,6 @@ const Home: React.SFC<HomeProps & AuthState & LocaleState> = props => (
     )}
   </div>
 );
-
-const mapStateToProps = (state: RootState) => ({
-  ...state.auth,
-  ...state.locale
-});
-
-const mapDispatchToProps = {
-  authLogin: authActions.login,
-  authLogout: authActions.logout,
-  localeChange: localeActions.change
-};
 
 export default compose(
   graphql(LOGIN_MUTATION),

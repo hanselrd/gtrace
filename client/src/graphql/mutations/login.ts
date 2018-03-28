@@ -9,15 +9,19 @@ export default gql`
   }
 `;
 
-type Data = {
+export type LoginMutationData = {
   login: {
     token: string;
   };
 };
 
-type Variables = {
+export type LoginMutationVariables = {
   email: string;
   password: string;
 };
 
-export type LoginMutationProps = ChildProps<{}, Data, Variables>;
+export type LoginMutationProps = ChildProps<
+  {},
+  LoginMutationData,
+  LoginMutationVariables
+>;

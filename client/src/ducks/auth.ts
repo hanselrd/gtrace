@@ -15,7 +15,7 @@ export const authServices = {
   setAuthToken: (auth: string) => localStorage.setItem(authTokenKey, auth),
   unsetAuthToken: () => localStorage.removeItem(authTokenKey),
   resetApolloClient: () => apollo.client.resetStore(),
-  resetApolloSubscriptionClient: () => apollo.subscriptionClient.close(true)
+  resetApolloSubscriptionClient: () => apollo.subscriptionClient.close(false)
 };
 
 export const authSagas = {

@@ -6,11 +6,11 @@ import './index.css';
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import * as apollo from '@app/core/apollo';
+import { client } from '@app/core/apollo';
 import store from '@app/core/store';
 
 ReactDOM.render(
-  <ApolloProvider client={apollo.client}>
+  <ApolloProvider client={client}>
     <Provider store={store}>
       <Router>
         <App />

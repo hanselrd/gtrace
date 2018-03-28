@@ -1,4 +1,9 @@
 export default {
+  login: 'Log in',
+  logout: 'Log out',
+  signup: 'Sign up',
+  submit: 'Submit',
+  navigation: 'Navigation',
   loading: 'Loading',
   user: 'User',
   userId: 'User ID',
@@ -7,7 +12,10 @@ export default {
   email: 'Email',
   password: 'Password',
   home: 'Home',
+  chat: 'Chat',
+  games: 'Games',
   profile: 'Profile',
+  settings: 'Settings',
   language: 'Language',
   english: 'English',
   spanish: 'Spanish',
@@ -15,5 +23,8 @@ export default {
   yes: 'Yes',
   no: 'No',
   role: 'Role',
-  joined: 'Joined'
+  joined: 'Joined',
+  verifyingCredentials: 'Verifying your credentials',
+  createAnAccount: 'Create an account',
+  alreadyHaveAnAccount: 'I already have an account'
 };
