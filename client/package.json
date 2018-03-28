@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/graphql": "^0.12.6",
+    "@types/jest": "^22.2.2",
+    "@types/node": "^9.6.0",
+    "@types/react": "^16.0.41",
+    "@types/react-dom": "^16.0.4",
+    "@types/react-router-dom": "^4.2.5",
+    "@types/react-scroll": "^1.5.3",
     "apollo-cache-inmemory": "^1.1.12",
     "apollo-client": "^2.2.8",
     "apollo-link": "^1.2.1",
@@ -37,14 +44,5 @@
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
-  },
-  "devDependencies": {
-    "@types/graphql": "^0.12.6",
-    "@types/jest": "^22.2.2",
-    "@types/node": "^9.6.0",
-    "@types/react": "^16.0.41",
-    "@types/react-dom": "^16.0.4",
-    "@types/react-router-dom": "^4.2.5",
-    "@types/react-scroll": "^1.5.3"
   }
 }
