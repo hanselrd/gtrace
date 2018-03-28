@@ -1,1 +1,10 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
+.App-container {
+  margin-top: 7em;
+  flex: 1;
+}

@@ -1,0 +1,16 @@
+type Role {
+  id: ID!
+  name: String! @ucfirst
+  abbreviation: String! @ucfirst
+  color: String!
+  users: [User!]
+}
+
+type Query {
+  roles: [Role!]
+  role(id: ID!): Role
+}
+
+type Mutation {
+  addRole(name: String!, abbreviation: String, color: String!): Role! @auth(roles: ["admin"])
+}

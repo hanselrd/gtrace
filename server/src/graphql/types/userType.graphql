@@ -1,0 +1,28 @@
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  dob: Date!
+  language: String!
+  online: Boolean!
+  role: Role
+  messages: [Message!]
+  friends: [User!]
+  pendingFriends: [User!] @private
+  createdAt: DateTime!
+}
+
+type Query {
+  users: [User!]
+  user(id: ID!): User
+  currentUser: User @auth
+}
+
+type Mutation {
+  signup(name: String!, email: String!, password: String!, dob: Date!, language: String): Auth!
+  login(email: String!, password: String!): Auth!
+}
+
+type Subscription {
+  userAdded: User! @auth
+}

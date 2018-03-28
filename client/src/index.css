@@ -1,0 +1,11 @@
+@import '~semantic-ui-css/semantic.min.css';
+@import url('https://fonts.googleapis.com/css?family=Kanit');
+
+body {
+  background-color: #444;
+  color: white;
+}
+
+* {
+  font-family: 'Kanit', sans-serif;
+}

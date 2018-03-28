@@ -1,0 +1,23 @@
+type Message {
+  id: ID!
+  text: String!
+  user: User!
+  createdAt: DateTime!
+}
+
+type Query {
+  messages: [Message!]
+  message(id: ID!): Message
+}
+
+type Mutation {
+  addMessage(text: String!): Message! @auth
+  deleteMessage(id: ID!): ID! @auth(roles: ["admin", "mod"])
+  deleteAllMessages: Boolean! @auth(roles: ["admin"])
+}
+
+type Subscription {
+  messageAdded: Message! @auth
+  messageDeleted: ID! @auth
+  allMessagesDeleted: Boolean! @auth
+}
