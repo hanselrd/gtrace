@@ -29,6 +29,7 @@ export interface IStrings extends LocalizedStringsMethods {
   no: string;
   role: string;
   joined: string;
+  show: string;
   verifyingCredentials: string;
   createAnAccount: string;
   alreadyHaveAnAccount: string;

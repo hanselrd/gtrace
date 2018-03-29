@@ -10,7 +10,7 @@ const Games: React.SFC = () => (
       <Header as="h2">{locale.games}</Header>
       <Grid textAlign="center">
         <Grid.Column>
-          <Search fluid size="large" loading />
+          <Search fluid size="large" />
         </Grid.Column>
       </Grid>
       <Card.Group itemsPerRow={5} doubling>

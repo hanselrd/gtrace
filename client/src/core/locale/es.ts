@@ -25,6 +25,7 @@ export default {
   no: 'No',
   role: 'Rango',
   joined: 'Se unió',
+  show: 'Mostrar',
   verifyingCredentials: 'Verificando sus credenciales',
   createAnAccount: 'Crear una cuenta',
   alreadyHaveAnAccount: 'Ya tengo una cuenta'
