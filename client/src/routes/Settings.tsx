@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Header, Segment } from 'semantic-ui-react';
+import { Button, Form, Header, Segment } from 'semantic-ui-react';
 import locale from '@app/core/locale';
 
 const Settings: React.SFC = () => (
@@ -9,6 +9,9 @@ const Settings: React.SFC = () => (
       <Form inverted>
         <Form.Checkbox label={`${locale.show} ${locale.dob.toLowerCase()}`} />
         <Form.Checkbox label={`${locale.show} ${locale.email.toLowerCase()}`} />
+        <Button primary type="submit">
+          {locale.saveChanges}
+        </Button>
       </Form>
     </Segment>
   </div>

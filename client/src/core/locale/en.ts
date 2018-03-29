@@ -26,6 +26,7 @@ export default {
   role: 'Role',
   joined: 'Joined',
   show: 'Show',
+  saveChanges: 'Save changes',
   verifyingCredentials: 'Verifying your credentials',
   createAnAccount: 'Create an account',
   alreadyHaveAnAccount: 'I already have an account'
