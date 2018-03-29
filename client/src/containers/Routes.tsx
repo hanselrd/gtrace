@@ -30,7 +30,7 @@ class Routes extends React.Component<RoutesProps> {
   render() {
     return (
       <Switch>
-        <Route exact path="/" component={Landing} />
+        <GuestRoute exact path="/" component={Landing} />
         <AuthRoute exact path="/home" component={Home} />
         <AuthRoute exact path="/chat" component={Chat} />
         <AuthRoute exact path="/games" component={Games} />
