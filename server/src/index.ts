@@ -26,7 +26,8 @@ const options: Options = {
       }
     }
   },
-  playground: process.env.NODE_ENV !== 'production' ? '/playground' : false,
+  // playground: process.env.NODE_ENV !== 'production' ? '/playground' : false,
+  playground: '/playground',
   formatError
 };
 
