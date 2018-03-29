@@ -14,7 +14,7 @@ export default async () => {
   const mod = await newRole('moderator', 'mod', 'blue');
 
   const system = await User.create({
-    name: '[SYSTEM]',
+    name: 'SYSTEM',
     email: 'system@system.system',
     password: process.env.SECRET,
     role: bot
