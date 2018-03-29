@@ -76,18 +76,22 @@ createConnection({
   synchronize: true,
   logging: process.env.NODE_ENV !== 'production',
   entities: [Friend, Message, Role, User]
-}).then(async () => {
-  if ((await User.find()).length === 0) {
-    await seeder();
-  } else {
-    await User.createQueryBuilder('user')
-      .update()
-      .set({ online: false })
-      .where('online = true')
-      .execute();
-  }
+})
+  .then(async () => {
+    if ((await User.find()).length === 0) {
+      await seeder();
+    } else {
+      await User.createQueryBuilder('user')
+        .update()
+        .set({ online: false })
+        .where('online = true')
+        .execute();
+    }
 
-  server.start(options, ({ port }) => {
-    console.log(`Server is running on port ${port}`);
+    server.start(options, ({ port }) => {
+      console.log(`Server is running on port ${port}`);
+    });
+  })
+  .catch(err => {
+    console.log('Failed to create connection', err);
   });
-});
