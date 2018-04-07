@@ -1,5 +1,6 @@
 import { createAction, createReducer, Action } from 'redux-act';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
+import * as jwt from 'jsonwebtoken';
 import * as apollo from '@app/core/apollo';
 
 const authTokenKey = 'trace:auth';
@@ -22,7 +23,12 @@ export const authSagas = {
   start: function*(action: Action<null>) {
     const authToken = yield call(authServices.getAuthToken);
     if (authToken) {
-      yield put(authActions.login(authToken));
+      const { exp } = yield call(jwt.decode, authToken);
+      if (exp > Date.now() / 1000) {
+        yield put(authActions.login(authToken));
+      } else {
+        yield put(authActions.logout());
+      }
     }
   },
   login: function*(action: Action<string>) {
