@@ -60,7 +60,7 @@ export default class User extends BaseModel {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async _beforeSave() {
+  private async _beforeSave() {
     const user = await User.findOneById(this.id);
     if (!user || user.password !== this.password) {
       this.password = await bcrypt.hash(this.password, 15);
