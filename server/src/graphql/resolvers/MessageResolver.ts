@@ -36,7 +36,10 @@ export default class MessageResolver {
   }
 
   @Query(returns => Message, { nullable: true })
-  message(@Arg('id') id: number) {
+  message(
+    @Arg('id', type => ID)
+    id: number
+  ) {
     return Message.findOneById(id);
   }
 
@@ -56,11 +59,12 @@ export default class MessageResolver {
     }
   }
 
-  @Authorized(['admin', 'mod'])
+  @Authorized(['owner', 'admin', 'mod'])
   @Mutation(returns => ID)
   async deleteMessage(
     @PubSub('messageDeleted') publish: Publisher<number>,
-    @Arg('id') id: number
+    @Arg('id', type => ID)
+    id: number
   ) {
     try {
       await Message.removeById(id);
@@ -71,7 +75,7 @@ export default class MessageResolver {
     }
   }
 
-  @Authorized(['admin'])
+  @Authorized(['owner', 'admin'])
   @Mutation(returns => Boolean)
   async deleteAllMessages(
     @PubSub('allMessagesDeleted') publish: Publisher<boolean>
@@ -95,13 +99,13 @@ export default class MessageResolver {
 
   @Authorized()
   @Subscription(returns => ID, { topics: 'messageDeleted' })
-  messageDeleted(@Root() message: Message) {
-    return message.id;
+  messageDeleted(@Root() id: number) {
+    return id;
   }
 
   @Authorized()
   @Subscription(returns => Boolean, { topics: 'allMessagesDeleted' })
-  allMessagesDeleted() {
-    return true;
+  allMessagesDeleted(@Root() status: boolean) {
+    return status;
   }
 }

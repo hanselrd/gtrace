@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, Authorized } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -70,9 +70,14 @@ export default class User extends BaseModel {
   @ManyToOne(type => Role)
   role?: Role;
 
-  @Field(type => [Message], { nullable: true })
+  @Field(type => [Message])
   @OneToMany(type => Message, message => message.user)
   messages?: Message[];
+
+  constructor() {
+    super();
+    typeof this._beforeSave;
+  }
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -101,7 +106,8 @@ export default class User extends BaseModel {
     })();
   }
 
-  @Field(type => [User])
+  @Authorized('private')
+  @Field(type => [User], { nullable: true })
   get pendingFriends() {
     return (async () => {
       const friendships = await Friend.createQueryBuilder('friend')

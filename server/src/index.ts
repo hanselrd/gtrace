@@ -8,7 +8,12 @@ import jwt from 'jsonwebtoken';
 import express from 'express';
 import seeder from './seeders';
 import { Friend, Message, Role, User } from './models';
-import { UserResolver } from './graphql/resolvers';
+import {
+  MessageResolver,
+  RoleResolver,
+  UserResolver,
+  authChecker
+} from './graphql';
 
 const options: Options = {
   port: +process.env.PORT || 4000,
@@ -33,16 +38,19 @@ const options: Options = {
 };
 
 const bootstrap = async () => {
-  const schema: any = await buildSchema({ resolvers: [UserResolver] });
+  const schema: any = await buildSchema({
+    resolvers: [MessageResolver, RoleResolver, UserResolver],
+    authChecker
+  });
 
   const server = new GraphQLServer({
     schema,
     context: async req => {
-      let token = '';
+      let token: string;
       if (req.request) {
-        token = <string>req.request.get('authorization');
+        token = req.request.get('authorization');
       } else if (req.connection) {
-        token = <string>req.connection.context['authorization'];
+        token = req.connection.context['authorization'];
       }
       if (token) {
         try {

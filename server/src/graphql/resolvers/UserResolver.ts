@@ -1,5 +1,6 @@
 import {
   Field,
+  ID,
   Resolver,
   Root,
   Arg,
@@ -51,7 +52,10 @@ export default class UserResolver {
   }
 
   @Query(returns => User, { nullable: true })
-  user(@Arg('id') id: number) {
+  user(
+    @Arg('id', type => ID)
+    id: number
+  ) {
     return User.findOneById(id);
   }
 

@@ -1,5 +1,6 @@
 import {
   Field,
+  ID,
   Resolver,
   Root,
   Arg,
@@ -33,11 +34,14 @@ export default class RoleResolver {
   }
 
   @Query(returns => Role, { nullable: true })
-  role(@Arg('id') id: number) {
+  role(
+    @Arg('id', type => ID)
+    id: number
+  ) {
     return Role.findOneById(id);
   }
 
-  @Authorized(['admin'])
+  @Authorized(['owner'])
   @Mutation(returns => Role)
   async addRole(@Args() { name, abbreviation, color }: AddRoleArgs) {
     try {
