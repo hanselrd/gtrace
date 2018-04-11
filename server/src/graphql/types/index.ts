@@ -9,3 +9,8 @@ export default mergeTypes(
     scalar JSON
   `)
 );
+
+// import { GraphQLScalarType } from "graphql";
+// export declare const : GraphQLScalarType;
+// export declare const Float: GraphQLScalarType;
+// export declare const ID: GraphQLScalarType;
