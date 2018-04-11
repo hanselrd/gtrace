@@ -27,7 +27,7 @@ class AddMessageArgs {
 export default class MessageResolver {
   @FieldResolver()
   user(@Root() message: Message) {
-    message.user || User.findOneById(message.userId);
+    return message.user || User.findOneById(message.userId);
   }
 
   @Query(returns => [Message], { nullable: true })

@@ -64,7 +64,6 @@ class Profile extends React.Component<ProfileProps> {
                       {locale.role}:{' '}
                       <Label
                         as="span"
-                        key={user.role.id}
                         color={user.role.color as any}
                       >
                         {user.role.abbreviation}
