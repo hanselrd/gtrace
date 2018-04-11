@@ -1,4 +1,3 @@
-import { Field, ID } from 'type-graphql';
 import {
   BaseEntity,
   PrimaryGeneratedColumn,
@@ -10,17 +9,11 @@ import { validate } from 'class-validator';
 import { UniqueKeyError } from '../errors';
 
 export default abstract class BaseModel extends BaseEntity {
-  @Field(type => ID)
-  @PrimaryGeneratedColumn()
-  readonly id: number;
+  @PrimaryGeneratedColumn() readonly id: number;
 
-  @Field()
-  @CreateDateColumn()
-  readonly createdAt: Date;
+  @CreateDateColumn() readonly createdAt: Date;
 
-  @Field()
-  @UpdateDateColumn()
-  readonly updatedAt: Date;
+  @UpdateDateColumn() readonly updatedAt: Date;
 
   async validate() {
     const errors = await validate(this, { validationError: { target: false } });

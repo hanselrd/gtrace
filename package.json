@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/src/index.ts",
   "scripts": {
-    "start": "ts-node -r dotenv/config server/src/index.ts dotenv_config_path=server/.env.dev",
+    "start": "ts-node --type-check -r dotenv/config server/src/index.ts dotenv_config_path=server/.env.dev",
     "test-server": "ts-node -r dotenv/config server/src/index.ts dotenv_config_path=server/.env.test",
     "clean": "rm -rf build",
     "build:server": "tsc && cp -R server/src/graphql/types/*.graphql build/graphql/types",
@@ -13,7 +13,7 @@
     "preinstall": "cd client && npm install",
     "postinstall": "npm run build",
     "test": "jest",
-    "watch": "nodemon --exec ts-node -r dotenv/config server/src/index.ts dotenv_config_path=server/.env.dev"
+    "watch": "nodemon --exec ts-node --type-check -r dotenv/config server/src/index.ts dotenv_config_path=server/.env.dev"
   },
   "repository": {
     "type": "git",

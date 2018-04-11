@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -25,6 +25,13 @@ import { Friend, Message, Role } from './';
 @ObjectType()
 @Entity()
 export default class User extends BaseModel {
+  @Field(type => ID)
+  readonly id: number;
+
+  @Field() readonly createdAt: Date;
+
+  @Field() readonly updatedAt: Date;
+
   @Field()
   @Column({ unique: true })
   @Length(3, 25)
@@ -41,7 +48,7 @@ export default class User extends BaseModel {
   password: string;
 
   @Field()
-  @Column({ type: 'date' })
+  @Column()
   @MinDate(new Date('1900-01-01'))
   @MaxDate(new Date())
   @IsDate()
@@ -63,7 +70,7 @@ export default class User extends BaseModel {
   @ManyToOne(type => Role)
   role?: Role;
 
-  @Field({ nullable: true })
+  @Field(type => [Message], { nullable: true })
   @OneToMany(type => Message, message => message.user)
   messages?: Message[];
 
@@ -76,7 +83,7 @@ export default class User extends BaseModel {
     }
   }
 
-  @Field()
+  @Field(type => [User])
   get friends() {
     return (async () => {
       const friendships = await Friend.createQueryBuilder('friend')
@@ -94,7 +101,7 @@ export default class User extends BaseModel {
     })();
   }
 
-  @Field()
+  @Field(type => [User])
   get pendingFriends() {
     return (async () => {
       const friendships = await Friend.createQueryBuilder('friend')
@@ -116,7 +123,7 @@ export default class User extends BaseModel {
 
   generateToken() {
     return jwt.sign(
-      { sub: this.id, iss: 'Trace' },
+      { sub: this.id, iss: '_Trace' },
       this.password + process.env.SECRET,
       { expiresIn: '7d' }
     );

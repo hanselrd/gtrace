@@ -1,3 +1,0 @@
-directive @auth(roles: [String!]) on FIELD_DEFINITION
-directive @ucfirst on FIELD_DEFINITION
-directive @private on FIELD_DEFINITION

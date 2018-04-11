@@ -1,7 +1,13 @@
 import {
+  Field,
   Resolver,
   Root,
+  Arg,
+  Args,
+  ArgsType,
   Ctx,
+  PubSub,
+  Publisher,
   Authorized,
   FieldResolver,
   Query,
@@ -10,6 +16,22 @@ import {
 } from 'type-graphql';
 import { LoginError, SignupError, UniqueKeyError } from '../../errors';
 import { Message, Role, User } from '../../models';
+import { AuthType } from '../types';
+
+@ArgsType()
+class SignupArgs {
+  @Field() name: string;
+  @Field() email: string;
+  @Field() password: string;
+  @Field() dob: Date;
+  @Field() language: string;
+}
+
+@ArgsType()
+class LoginArgs {
+  @Field() email: string;
+  @Field() password: string;
+}
 
 @Resolver(objectType => User)
 export default class UserResolver {
@@ -17,55 +39,69 @@ export default class UserResolver {
   role(@Root() user: User) {
     return user.role || Role.findOneById(user.roleId);
   }
-}
 
-// export default {
-//   User: {
-//     role: parent => parent.role || Role.findOneById(parent.roleId),
-//     messages: parent =>
-//       parent.messages || Message.find({ where: { userId: parent.id } })
-//   },
-//   Query: {
-//     users: () => User.find(),
-//     user: (parent, { id }) => User.findOneById(id),
-//     currentUser: (parent, args, { user }) => user
-//   },
-//   Mutation: {
-//     signup: async (parent, args, { pubsub }) => {
-//       const user = await User.create(args);
-//       const errors = await user.validate();
-//       if (errors) {
-//         throw new SignupError({ data: errors });
-//       }
-//       try {
-//         await user.save();
-//       } catch (err) {
-//         if (err instanceof UniqueKeyError) {
-//           throw new SignupError(err);
-//         }
-//         throw err;
-//       }
-//       pubsub.publish('userAdded', { userAdded: user });
-//       return { token: user.generateToken(), user };
-//     },
-//     login: async (parent, { email, password }) => {
-//       const user = await User.findOne({ where: { email } });
-//       if (!user) {
-//         throw new LoginError({
-//           data: { email: 'No user exists with that email' }
-//         });
-//       }
-//       if (!await user.authenticate(password)) {
-//         throw new LoginError({
-//           data: { password: 'Password is incorrect' }
-//         });
-//       }
-//       return { token: user.generateToken(), user };
-//     }
-//   },
-//   Subscription: {
-//     userAdded: {
-//       subscribe: (parent, args, { pubsub }) => pubsub.asyncIterator('userAdded')
-//     }
-//   }
-// };
+  @FieldResolver()
+  messages(@Root() user: User) {
+    return user.messages || Message.find({ where: { userId: user.id } });
+  }
+
+  @Query(returns => [User], { nullable: true })
+  users() {
+    return User.find();
+  }
+
+  @Query(returns => User, { nullable: true })
+  user(@Arg('id') id: number) {
+    return User.findOneById(id);
+  }
+
+  @Authorized()
+  @Query(returns => User, { nullable: true })
+  currentUser(@Ctx() { user }: any) {
+    return user;
+  }
+
+  @Mutation(returns => AuthType)
+  async signup(
+    @PubSub('userAdded') publish: Publisher<User>,
+    @Args() args: SignupArgs
+  ) {
+    const user = await User.create(args);
+    const errors = await user.validate();
+    if (errors) {
+      throw new SignupError({ data: errors });
+    }
+    try {
+      await user.save();
+    } catch (err) {
+      if (err instanceof UniqueKeyError) {
+        throw new SignupError(err);
+      }
+      throw err;
+    }
+    publish(user);
+    return { token: user.generateToken(), user };
+  }
+
+  @Mutation(returns => AuthType)
+  async login(@Args() { email, password }: LoginArgs) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      throw new LoginError({
+        data: { email: 'No user exists with that email' }
+      });
+    }
+    if (!await user.authenticate(password)) {
+      throw new LoginError({
+        data: { password: 'Password is incorrect' }
+      });
+    }
+    return { token: user.generateToken(), user };
+  }
+
+  @Authorized()
+  @Subscription(returns => User, { topics: 'userAdded' })
+  userAdded(@Root() user: User) {
+    return user;
+  }
+}
