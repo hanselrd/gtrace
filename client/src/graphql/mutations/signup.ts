@@ -6,7 +6,7 @@ export default gql`
     $name: String!
     $email: String!
     $password: String!
-    $dob: Date!
+    $dob: DateTime!
     $language: String
   ) {
     signup(
