@@ -69,7 +69,6 @@ class Profile extends React.Component<ProfileProps> {
     }
   }
 
-  // needs decline behavior, currently only supports accept
   onHandleFriendRequest(accept: boolean) {
     const { currentUser: { currentUser }, user: { user } } = this.props;
 
@@ -92,7 +91,9 @@ class Profile extends React.Component<ProfileProps> {
               data: {
                 currentUser: {
                   ...currentUserQuery.currentUser,
-                  friends: [...currentUserQuery.currentUser.friends, user],
+                  friends: accept
+                    ? [...currentUserQuery.currentUser.friends, user]
+                    : currentUserQuery.currentUser.friends,
                   pendingFriends: currentUserQuery.currentUser.pendingFriends.filter(
                     friend => friend.id !== user.id
                   )
@@ -101,21 +102,23 @@ class Profile extends React.Component<ProfileProps> {
             });
           }
 
-          const userQuery: { user: typeof user } = cache.readQuery({
-            query: USER_QUERY,
-            variables: { id: user.id }
-          }) as any;
-          if (userQuery) {
-            cache.writeQuery({
+          if (accept) {
+            const userQuery: { user: typeof user } = cache.readQuery({
               query: USER_QUERY,
-              variables: { id: user.id },
-              data: {
-                user: {
-                  ...userQuery.user,
-                  friends: [...userQuery.user.friends, currentUser]
+              variables: { id: user.id }
+            }) as any;
+            if (userQuery) {
+              cache.writeQuery({
+                query: USER_QUERY,
+                variables: { id: user.id },
+                data: {
+                  user: {
+                    ...userQuery.user,
+                    friends: [...userQuery.user.friends, currentUser]
+                  }
                 }
-              }
-            });
+              });
+            }
           }
         }
       });
