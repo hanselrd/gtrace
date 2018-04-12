@@ -76,7 +76,9 @@ class Header extends React.Component<HeaderProps> {
             <Menu.Item as={Link} to="/" header>
               <img src={logo} alt="logo" width={55} />
               <span>
-                <h2>Trace</h2>
+                <h2>
+                  <span>Trace</span>
+                </h2>
               </span>
             </Menu.Item>
             {user && (

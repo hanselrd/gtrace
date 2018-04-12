@@ -6,6 +6,12 @@ export default gql`
     currentUser {
       id
       name
+      friends {
+        id
+      }
+      pendingFriends {
+        id
+      }
     }
   }
 `;
@@ -14,6 +20,16 @@ export type CurrentUserQueryData = {
   currentUser: {
     id: string;
     name: string;
+    friends: [
+      {
+        id: string;
+      }
+    ];
+    pendingFriends: [
+      {
+        id: string;
+      }
+    ];
   };
 };
 

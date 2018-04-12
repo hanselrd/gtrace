@@ -1,29 +1,138 @@
 import * as React from 'react';
-import { graphql } from 'react-apollo';
-import { RouteComponentProps } from 'react-router-dom';
-import { Grid, Label, Segment } from 'semantic-ui-react';
+import { graphql, compose } from 'react-apollo';
+import { RouteComponentProps, Link } from 'react-router-dom';
+import { Button, Grid, Header, Icon, Label, Segment } from 'semantic-ui-react';
 import Void from '@app/utils/Void';
 import locale from '@app/core/locale';
+import CURRENT_USER_QUERY, {
+  CurrentUserQueryProps
+} from '@app/graphql/queries/currentUser';
 import USER_QUERY, {
   UserQueryProps,
   UserQueryData,
   UserQueryVariables
 } from '@app/graphql/queries/user';
+import SEND_FRIEND_REQUEST_MUTATION, {
+  SendFriendRequestMutationProps
+} from '@app/graphql/mutations/sendFriendRequest';
+import HANDLE_FRIEND_REQUEST_MUTATION, {
+  HandleFriendRequestMutationProps
+} from '@app/graphql/mutations/handleFriendRequest';
 
-export type ProfileProps = RouteComponentProps<any> & UserQueryProps;
+let currentUserQueryProps: CurrentUserQueryProps;
+let userQueryProps: UserQueryProps;
+let sendFriendRequestMutationProps: SendFriendRequestMutationProps;
+let handleFriendRequestMutationProps: HandleFriendRequestMutationProps;
+
+export type ProfileProps = RouteComponentProps<any> & {
+  currentUser: typeof currentUserQueryProps.data;
+  user: typeof userQueryProps.data;
+  sendFriendRequest: typeof sendFriendRequestMutationProps.mutate;
+  handleFriendRequest: typeof handleFriendRequestMutationProps.mutate;
+} & UserQueryProps;
 
 class Profile extends React.Component<ProfileProps> {
   componentWillMount() {
-    this.props.data.refetch();
+    this.props.user.refetch();
+  }
+
+  onSendFriendRequest() {
+    const { currentUser: { currentUser }, user: { user } } = this.props;
+
+    if (this.props.sendFriendRequest && currentUser && user) {
+      this.props.sendFriendRequest({
+        variables: {
+          id: user.id
+        },
+        update: (cache, result) => {
+          const userQuery: { user: typeof user } = cache.readQuery({
+            query: USER_QUERY,
+            variables: { id: user.id }
+          }) as any;
+          if (userQuery) {
+            cache.writeQuery({
+              query: USER_QUERY,
+              variables: { id: user.id },
+              data: {
+                user: {
+                  ...userQuery.user,
+                  pendingFriends: [
+                    ...userQuery.user.pendingFriends,
+                    currentUser
+                  ]
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+
+  // needs decline behavior, currently only supports accept
+  onHandleFriendRequest(accept: boolean) {
+    const { currentUser: { currentUser }, user: { user } } = this.props;
+
+    if (this.props.handleFriendRequest && currentUser && user) {
+      this.props.handleFriendRequest({
+        variables: {
+          id: user.id,
+          accept
+        },
+        update: (cache, result) => {
+          const currentUserQuery: {
+            currentUser: typeof currentUser;
+          } = cache.readQuery({
+            query: CURRENT_USER_QUERY
+          }) as any;
+          if (currentUserQuery) {
+            cache.writeQuery({
+              query: CURRENT_USER_QUERY,
+              variables: { id: user.id },
+              data: {
+                currentUser: {
+                  ...currentUserQuery.currentUser,
+                  friends: [...currentUserQuery.currentUser.friends, user],
+                  pendingFriends: currentUserQuery.currentUser.pendingFriends.filter(
+                    friend => friend.id !== user.id
+                  )
+                }
+              }
+            });
+          }
+
+          const userQuery: { user: typeof user } = cache.readQuery({
+            query: USER_QUERY,
+            variables: { id: user.id }
+          }) as any;
+          if (userQuery) {
+            cache.writeQuery({
+              query: USER_QUERY,
+              variables: { id: user.id },
+              data: {
+                user: {
+                  ...userQuery.user,
+                  friends: [...userQuery.user.friends, currentUser]
+                }
+              }
+            });
+          }
+        }
+      });
+    }
   }
 
   render() {
-    const { data: { loading, user } } = this.props;
+    const {
+      currentUser: { currentUser },
+      user: { loading, user }
+    } = this.props;
+
     if (loading) {
       return <p>{locale.loading}...</p>;
     }
 
-    if (!user) {
+    if (!currentUser || !user) {
       return <p>{locale.notFound}</p>;
     }
 
@@ -33,9 +142,73 @@ class Profile extends React.Component<ProfileProps> {
       <div>
         <Segment inverted>
           <Grid stackable>
+            {currentUser.id !== user.id && (
+              <Grid.Row>
+                <Grid.Column textAlign="center">
+                  {(() => {
+                    if (
+                      currentUser.friends.some(friend => friend.id === user.id)
+                    ) {
+                      return (
+                        <Button inverted fluid color="blue" disabled>
+                          {locale.friends}
+                        </Button>
+                      );
+                    } else if (
+                      currentUser.pendingFriends.some(
+                        friend => friend.id === user.id
+                      )
+                    ) {
+                      return (
+                        <Button.Group fluid>
+                          <Button
+                            inverted
+                            color="green"
+                            onClick={() => this.onHandleFriendRequest(true)}
+                          >
+                            {locale.accept} {locale.friendRequest}
+                          </Button>
+                          <Button
+                            inverted
+                            color="red"
+                            onClick={() => this.onHandleFriendRequest(false)}
+                          >
+                            {locale.decline} {locale.friendRequest}
+                          </Button>
+                        </Button.Group>
+                      );
+                    } else if (
+                      user.pendingFriends.some(
+                        friend => friend.id === currentUser.id
+                      )
+                    ) {
+                      return (
+                        <Button inverted fluid disabled>
+                          {locale.friendRequestSent}
+                        </Button>
+                      );
+                    } else {
+                      return (
+                        <Button
+                          inverted
+                          fluid
+                          color="green"
+                          onClick={() => this.onSendFriendRequest()}
+                        >
+                          {locale.sendFriendRequest}
+                        </Button>
+                      );
+                    }
+                  })()}
+                </Grid.Column>
+              </Grid.Row>
+            )}
             <Grid.Row>
               <Grid.Column width={8} textAlign="center">
-                <h2>{user.name}</h2>
+                <h2>
+                  {user.name}
+                  <Icon name="circle" color={user.online ? 'green' : 'grey'} />
+                </h2>
                 <img src="https://via.placeholder.com/200x200" alt="profile" />
               </Grid.Column>
               <Grid.Column width={8} verticalAlign="middle">
@@ -62,10 +235,7 @@ class Profile extends React.Component<ProfileProps> {
                   {user.role && (
                     <Void>
                       {locale.role}:{' '}
-                      <Label
-                        as="span"
-                        color={user.role.color as any}
-                      >
+                      <Label as="span" color={user.role.color as any}>
                         {user.role.abbreviation}
                       </Label>
                     </Void>
@@ -82,18 +252,47 @@ class Profile extends React.Component<ProfileProps> {
             </Grid.Row>
           </Grid>
         </Segment>
+        <Segment inverted>
+          <Header as="h2">
+            {locale.friends} ({user.friends.length})
+          </Header>
+          {user.friends.map(friend => (
+            <Link key={friend.id} to={'/profile/' + friend.id}>
+              {friend.name}
+            </Link>
+          ))}
+        </Segment>
+        {currentUser.id == user.id && (
+          <Segment inverted>
+            <Header as="h2">
+              {locale.friendRequests} ({user.pendingFriends.length})
+            </Header>
+            {user.pendingFriends.map(friend => (
+              <Link key={friend.id} to={'/profile/' + friend.id}>
+                {friend.name}
+              </Link>
+            ))}
+          </Segment>
+        )}
       </div>
     );
   }
 }
 
-export default graphql<ProfileProps, UserQueryData, UserQueryVariables>(
-  USER_QUERY,
-  {
+export default compose(
+  graphql(CURRENT_USER_QUERY, {
+    name: 'currentUser',
+    options: { errorPolicy: 'all' }
+  }),
+  graphql<ProfileProps, UserQueryData, UserQueryVariables>(USER_QUERY, {
+    name: 'user',
     options: ({ match }) => ({
       variables: {
         id: match.params.id
-      }
+      },
+      errorPolicy: 'all'
     })
-  }
+  }),
+  graphql(SEND_FRIEND_REQUEST_MUTATION, { name: 'sendFriendRequest' }),
+  graphql(HANDLE_FRIEND_REQUEST_MUTATION, { name: 'handleFriendRequest' })
 )(Profile);

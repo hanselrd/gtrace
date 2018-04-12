@@ -16,7 +16,7 @@ import {
   Subscription
 } from 'type-graphql';
 import { LoginError, SignupError, UniqueKeyError } from '../../errors';
-import { Message, Role, User } from '../../models';
+import { Message, Role, User, Friend } from '../../models';
 import { AuthType } from '../types';
 
 @ArgsType()
@@ -32,6 +32,13 @@ class SignupArgs {
 class LoginArgs {
   @Field() email: string;
   @Field() password: string;
+}
+
+@ArgsType()
+class HandleFriendRequestArgs {
+  @Field(type => ID)
+  id: number;
+  @Field() accept: boolean;
 }
 
 @Resolver(objectType => User)
@@ -101,6 +108,46 @@ export default class UserResolver {
       });
     }
     return { token: user.generateToken(), user };
+  }
+
+  // needs checks
+  @Authorized()
+  @Mutation(returns => Boolean)
+  async sendFriendRequest(
+    @Arg('id', type => ID)
+    id: number,
+    @Ctx() { user }: any
+  ) {
+    const friendship = await Friend.create({
+      user1Id: user.id,
+      user2Id: id
+    }).save();
+    if (friendship) {
+      return true;
+    }
+    return false;
+  }
+
+  // needs checks
+  @Authorized()
+  @Mutation(returns => Boolean)
+  async handleFriendRequest(
+    @Args() { id, accept }: HandleFriendRequestArgs,
+    @Ctx() { user }: any
+  ) {
+    const friendship = await Friend.findOne({
+      where: { user1Id: id, user2Id: user.id }
+    });
+    if (friendship) {
+      if (accept) {
+        friendship.accepted = true;
+        await friendship.save();
+      } else {
+        await friendship.remove();
+      }
+      return true;
+    }
+    return false;
   }
 
   @Authorized()

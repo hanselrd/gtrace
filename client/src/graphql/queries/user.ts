@@ -41,14 +41,18 @@ export type UserQueryData = {
       abbreviation: string;
       color: string;
     };
-    friends: {
-      id: string;
-      name: string;
-    };
-    pendingFriends: {
-      id: string;
-      name: string;
-    };
+    friends: [
+      {
+        id: string;
+        name: string;
+      }
+    ];
+    pendingFriends: [
+      {
+        id: string;
+        name: string;
+      }
+    ];
     createdAt: string;
   };
 };

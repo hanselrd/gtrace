@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType, Authorized } from 'type-graphql';
+import { Field, ID, ObjectType } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -106,8 +106,7 @@ export default class User extends BaseModel {
     })();
   }
 
-  @Authorized('private')
-  @Field(type => [User], { nullable: true })
+  @Field(type => [User])
   get pendingFriends() {
     return (async () => {
       const friendships = await Friend.createQueryBuilder('friend')

@@ -30,6 +30,13 @@ export interface IStrings extends LocalizedStringsMethods {
   role: string;
   joined: string;
   show: string;
+  friends: string;
+  friendRequest: string;
+  friendRequests: string;
+  friendRequestSent: string;
+  sendFriendRequest: string;
+  accept: string;
+  decline: string;
   saveChanges: string;
   verifyingCredentials: string;
   createAnAccount: string;
