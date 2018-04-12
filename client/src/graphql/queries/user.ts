@@ -15,6 +15,14 @@ export default gql`
         abbreviation
         color
       }
+      friends {
+        id
+        name
+      }
+      pendingFriends {
+        id
+        name
+      }
       createdAt
     }
   }
@@ -33,6 +41,18 @@ export type UserQueryData = {
       abbreviation: string;
       color: string;
     };
+    friends: [
+      {
+        id: string;
+        name: string;
+      }
+    ];
+    pendingFriends: [
+      {
+        id: string;
+        name: string;
+      }
+    ];
     createdAt: string;
   };
 };

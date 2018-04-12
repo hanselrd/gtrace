@@ -1,3 +1,4 @@
+import { Field, ID, ObjectType } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -21,13 +22,23 @@ import jwt from 'jsonwebtoken';
 import BaseModel from './BaseModel';
 import { Friend, Message, Role } from './';
 
+@ObjectType()
 @Entity()
 export default class User extends BaseModel {
+  @Field(type => ID)
+  readonly id: number;
+
+  @Field() readonly createdAt: Date;
+
+  @Field() readonly updatedAt: Date;
+
+  @Field()
   @Column({ unique: true })
   @Length(3, 25)
   @IsAlphanumeric()
   name: string;
 
+  @Field()
   @Column({ unique: true })
   @IsEmail()
   email: string;
@@ -36,27 +47,37 @@ export default class User extends BaseModel {
   @MinLength(6)
   password: string;
 
-  @Column({ type: 'date' })
+  @Field()
+  @Column()
   @MinDate(new Date('1900-01-01'))
   @MaxDate(new Date())
   @IsDate()
   dob: Date;
 
+  @Field()
   @Column({ default: 'en' })
   @IsIn(['en', 'es'])
   language: string;
 
+  @Field()
   @Column({ default: false })
   online: boolean;
 
   @Column({ nullable: true })
-  roleId: number;
+  roleId?: number;
 
+  @Field({ nullable: true })
   @ManyToOne(type => Role)
-  role: Role;
+  role?: Role;
 
+  @Field(type => [Message])
   @OneToMany(type => Message, message => message.user)
-  messages: Message[];
+  messages?: Message[];
+
+  constructor() {
+    super();
+    typeof this._beforeSave;
+  }
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -67,6 +88,7 @@ export default class User extends BaseModel {
     }
   }
 
+  @Field(type => [User])
   get friends() {
     return (async () => {
       const friendships = await Friend.createQueryBuilder('friend')
@@ -84,6 +106,7 @@ export default class User extends BaseModel {
     })();
   }
 
+  @Field(type => [User])
   get pendingFriends() {
     return (async () => {
       const friendships = await Friend.createQueryBuilder('friend')
@@ -105,7 +128,7 @@ export default class User extends BaseModel {
 
   generateToken() {
     return jwt.sign(
-      { sub: this.id, iss: 'Trace' },
+      { sub: this.id, iss: '_Trace' },
       this.password + process.env.SECRET,
       { expiresIn: '7d' }
     );

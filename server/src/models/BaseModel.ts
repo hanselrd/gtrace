@@ -9,11 +9,11 @@ import { validate } from 'class-validator';
 import { UniqueKeyError } from '../errors';
 
 export default abstract class BaseModel extends BaseEntity {
-  @PrimaryGeneratedColumn() id: number;
+  @PrimaryGeneratedColumn() readonly id: number;
 
-  @CreateDateColumn() createdAt: Date;
+  @CreateDateColumn() readonly createdAt: Date;
 
-  @UpdateDateColumn() updatedAt: Date;
+  @UpdateDateColumn() readonly updatedAt: Date;
 
   async validate() {
     const errors = await validate(this, { validationError: { target: false } });
