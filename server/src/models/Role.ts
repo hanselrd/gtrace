@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import { Entity, Column, OneToMany } from 'typeorm';
 import BaseModel from './BaseModel';
 import { User } from './';
@@ -6,9 +6,6 @@ import { User } from './';
 @ObjectType()
 @Entity()
 export default class Role extends BaseModel {
-  @Field(type => ID)
-  readonly id: number;
-
   @Field()
   @Column({ unique: true })
   name: string;

@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ObjectType } from 'type-graphql';
 import {
   Entity,
   Column,
@@ -25,13 +25,6 @@ import { Friend, Message, Role } from './';
 @ObjectType()
 @Entity()
 export default class User extends BaseModel {
-  @Field(type => ID)
-  readonly id: number;
-
-  @Field() readonly createdAt: Date;
-
-  @Field() readonly updatedAt: Date;
-
   @Field()
   @Column({ unique: true })
   @Length(3, 25)
