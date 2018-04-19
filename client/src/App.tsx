@@ -35,7 +35,11 @@ class App extends React.Component<AppProps> {
   }
 
   render() {
-    const { data: { currentUser }, authLogout, localeChange } = this.props;
+    const {
+      data: { currentUser },
+      authLogout,
+      localeChange
+    } = this.props;
     return (
       <div className="App">
         <Header

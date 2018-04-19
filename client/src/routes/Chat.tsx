@@ -75,7 +75,9 @@ class Chat extends React.Component<ChatProps> {
   }
 
   render() {
-    const { data: { loading, messages } } = this.props;
+    const {
+      data: { loading, messages }
+    } = this.props;
     if (loading) {
       return <p>{locale.loading}...</p>;
     }

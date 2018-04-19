@@ -102,7 +102,7 @@ export default class UserResolver {
         data: { email: 'No user exists with that email' }
       });
     }
-    if (!await user.authenticate(password)) {
+    if (!(await user.authenticate(password))) {
       throw new LoginError({
         data: { password: 'Password is incorrect' }
       });

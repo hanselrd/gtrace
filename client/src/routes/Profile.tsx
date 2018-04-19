@@ -37,7 +37,10 @@ class Profile extends React.Component<ProfileProps> {
   }
 
   onSendFriendRequest() {
-    const { currentUser: { currentUser }, user: { user } } = this.props;
+    const {
+      currentUser: { currentUser },
+      user: { user }
+    } = this.props;
 
     if (this.props.sendFriendRequest && currentUser && user) {
       this.props.sendFriendRequest({
@@ -70,7 +73,10 @@ class Profile extends React.Component<ProfileProps> {
   }
 
   onHandleFriendRequest(accept: boolean) {
-    const { currentUser: { currentUser }, user: { user } } = this.props;
+    const {
+      currentUser: { currentUser },
+      user: { user }
+    } = this.props;
 
     if (this.props.handleFriendRequest && currentUser && user) {
       this.props.handleFriendRequest({
@@ -229,7 +235,9 @@ class Profile extends React.Component<ProfileProps> {
                   {locale.language}:{' '}
                   {user.language === 'en'
                     ? locale.english
-                    : user.language === 'es' ? locale.spanish : null}
+                    : user.language === 'es'
+                      ? locale.spanish
+                      : null}
                 </p>
                 <p>
                   {locale.online}: {user.online ? locale.yes : locale.no}
