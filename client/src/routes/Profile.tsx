@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { graphql, compose } from 'react-apollo';
 import { RouteComponentProps, Link } from 'react-router-dom';
+import Dropzone, { ImageFile } from 'react-dropzone';
 import { Button, Grid, Header, Icon, Label, Segment } from 'semantic-ui-react';
 import Void from '@app/utils/Void';
 import locale from '@app/core/locale';
@@ -18,17 +19,22 @@ import SEND_FRIEND_REQUEST_MUTATION, {
 import HANDLE_FRIEND_REQUEST_MUTATION, {
   HandleFriendRequestMutationProps
 } from '@app/graphql/mutations/handleFriendRequest';
+import UPLOAD_PICTURE_MUTATION, {
+  UploadPictureMutationProps
+} from '@app/graphql/mutations/uploadPicture';
 
 let currentUserQueryProps: CurrentUserQueryProps;
 let userQueryProps: UserQueryProps;
 let sendFriendRequestMutationProps: SendFriendRequestMutationProps;
 let handleFriendRequestMutationProps: HandleFriendRequestMutationProps;
+let uploadPictureMutationProps: UploadPictureMutationProps;
 
 export type ProfileProps = RouteComponentProps<{ id: string }> & {
   currentUser: typeof currentUserQueryProps.data;
   user: typeof userQueryProps.data;
   sendFriendRequest: typeof sendFriendRequestMutationProps.mutate;
   handleFriendRequest: typeof handleFriendRequestMutationProps.mutate;
+  uploadPicture: typeof uploadPictureMutationProps.mutate;
 } & UserQueryProps;
 
 class Profile extends React.Component<ProfileProps> {
@@ -131,6 +137,44 @@ class Profile extends React.Component<ProfileProps> {
     }
   }
 
+  onImageDrop(files: ImageFile[]) {
+    const {
+      user: { user }
+    } = this.props;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+
+    reader.onload = () => {
+      if (this.props.uploadPicture && user) {
+        this.props.uploadPicture({
+          variables: {
+            data: reader.result
+          },
+          update: (cache, result) => {
+            const userQuery: { user: typeof user } = cache.readQuery({
+              query: USER_QUERY,
+              variables: { id: user.id }
+            }) as any;
+
+            if (userQuery) {
+              cache.writeQuery({
+                query: USER_QUERY,
+                variables: { id: user.id },
+                data: {
+                  user: {
+                    ...userQuery.user,
+                    picture: reader.result
+                  }
+                }
+              });
+            }
+          }
+        });
+      }
+    };
+  }
+
   render() {
     const {
       currentUser: { currentUser },
@@ -218,7 +262,24 @@ class Profile extends React.Component<ProfileProps> {
                   {user.name}
                   <Icon name="circle" color={user.online ? 'green' : 'grey'} />
                 </h2>
-                <img src="https://via.placeholder.com/200x200" alt="profile" />
+                {user.picture ? (
+                  <img src={user.picture} alt="profile" width={200} />
+                ) : (
+                  <img
+                    src="https://via.placeholder.com/200x200"
+                    alt="profile"
+                  />
+                )}
+                {currentUser.id === user.id && (
+                  <Dropzone
+                    style={{}}
+                    multiple={false}
+                    accept="image/*"
+                    onDrop={files => this.onImageDrop(files)}
+                  >
+                    <Button inverted>{locale.uploadProfilePicture}</Button>
+                  </Dropzone>
+                )}
               </Grid.Column>
               <Grid.Column width={8} verticalAlign="middle">
                 <p>
@@ -305,5 +366,6 @@ export default compose(
     })
   }),
   graphql(SEND_FRIEND_REQUEST_MUTATION, { name: 'sendFriendRequest' }),
-  graphql(HANDLE_FRIEND_REQUEST_MUTATION, { name: 'handleFriendRequest' })
+  graphql(HANDLE_FRIEND_REQUEST_MUTATION, { name: 'handleFriendRequest' }),
+  graphql(UPLOAD_PICTURE_MUTATION, { name: 'uploadPicture' })
 )(Profile);

@@ -45,6 +45,7 @@ export interface IStrings extends LocalizedStringsMethods {
   slogan: string;
   joinUs: string;
   noNotificationsAtThisTime: string;
+  uploadProfilePicture: string;
 }
 
 const strings: IStrings = new LocalizedStrings({ en, es });

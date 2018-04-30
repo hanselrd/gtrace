@@ -40,5 +40,6 @@ export default {
   welcomeTo: 'Bienvenido a',
   slogan: 'Conoce a jugadores con tu misma pasión',
   joinUs: 'Únete',
-  noNotificationsAtThisTime: 'No tienes notificaciones en este momento'
+  noNotificationsAtThisTime: 'No tienes notificaciones en este momento',
+  uploadProfilePicture: 'Subir Foto de Perfil'
 };

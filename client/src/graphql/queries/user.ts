@@ -7,6 +7,7 @@ export default gql`
       id
       name
       email
+      picture
       dob
       language
       online
@@ -33,10 +34,11 @@ export type UserQueryData = {
     id: string;
     name: string;
     email: string;
+    picture?: string;
     dob: string;
     language: string;
     online: boolean;
-    role: {
+    role?: {
       id: string;
       abbreviation: string;
       color: string;

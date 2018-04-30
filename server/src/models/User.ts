@@ -36,6 +36,10 @@ export default class User extends BaseModel {
   @IsEmail()
   email: string;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  picture?: string;
+
   @Column()
   @MinLength(6)
   password: string;

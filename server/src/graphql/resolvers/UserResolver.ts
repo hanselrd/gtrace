@@ -110,6 +110,14 @@ export default class UserResolver {
     return { token: user.generateToken(), user };
   }
 
+  @Authorized()
+  @Mutation(returns => String)
+  async uploadPicture(@Arg('data') data: string, @Ctx() { user }: any) {
+    user.picture = data;
+    await user.save();
+    return user.picture;
+  }
+
   // needs checks
   @Authorized()
   @Mutation(returns => Boolean)

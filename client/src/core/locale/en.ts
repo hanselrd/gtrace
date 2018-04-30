@@ -40,5 +40,6 @@ export default {
   welcomeTo: 'Welcome to',
   slogan: 'Meet like-minded gamers that share your passion',
   joinUs: 'Join us',
-  noNotificationsAtThisTime: 'No notifications at this time'
+  noNotificationsAtThisTime: 'No notifications at this time',
+  uploadProfilePicture: 'Upload Profile Picture'
 };
