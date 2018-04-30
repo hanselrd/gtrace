@@ -31,7 +31,7 @@ export default {
   friendRequests: 'Solicitudes de Amistad',
   friendRequestSent: 'Solicitud de Amistad Enviado',
   sendFriendRequest: 'Enviar Solicitud de Amistad',
-  accept: 'Acepter',
+  accept: 'Aceptar',
   decline: 'Negar',
   saveChanges: 'Guardar cambios',
   verifyingCredentials: 'Verificando sus credenciales',
