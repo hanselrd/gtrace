@@ -8,7 +8,7 @@ const Home: React.SFC = () => (
       <Header as="h2">{locale.home}</Header>
       <Container textAlign="center">
         <Segment inverted>
-          <p>No notifications at this time</p>
+          <p>{locale.noNotificationsAtThisTime}</p>
         </Segment>
       </Container>
     </Segment>

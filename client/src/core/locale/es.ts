@@ -39,5 +39,6 @@ export default {
   alreadyHaveAnAccount: 'Ya tengo una cuenta',
   welcomeTo: 'Bienvenido a',
   slogan: 'Conoce a jugadores con tu misma pasión',
-  joinUs: 'Únete'
+  joinUs: 'Únete',
+  noNotificationsAtThisTime: 'No tienes notificaciones en este momento'
 };
