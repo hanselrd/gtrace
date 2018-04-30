@@ -30,7 +30,7 @@ const Games: React.SFC = () => (
         <Card as={Link} to="/games/3" raised>
           <Image src={gta5} />
           <Card.Content>
-            <Card.Header>GTA V</Card.Header>
+            <Card.Header>Grand Theft Auto V</Card.Header>
           </Card.Content>
         </Card>
         <Card as={Link} to="/games/4" raised>
