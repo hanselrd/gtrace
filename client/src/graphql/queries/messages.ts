@@ -10,6 +10,7 @@ export default gql`
         id
         name
         role {
+          id
           abbreviation
           color
         }
@@ -28,6 +29,7 @@ export type MessagesQueryData = {
         id: string;
         name: string;
         role: {
+          id: string;
           abbreviation: string;
           color: string;
         };
