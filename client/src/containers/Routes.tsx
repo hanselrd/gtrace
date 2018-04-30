@@ -11,6 +11,7 @@ import GuestRoute from '@app/containers/GuestRoute';
 import Landing from '@app/routes/Landing';
 import Home from '@app/routes/Home';
 import Chat from '@app/routes/Chat';
+import Game from '@app/routes/Game';
 import Games from '@app/routes/Games';
 import Profile from '@app/routes/Profile';
 import Settings from '@app/routes/Settings';
@@ -33,6 +34,7 @@ class Routes extends React.Component<RoutesProps> {
         <GuestRoute exact path="/" component={Landing} />
         <AuthRoute exact path="/home" component={Home} />
         <AuthRoute exact path="/chat" component={Chat} />
+        <AuthRoute exact path="/games/:id" component={Game} />
         <AuthRoute exact path="/games" component={Games} />
         <AuthRoute exact path="/profile/:id" component={Profile} />
         <AuthRoute exact path="/settings" component={Settings} />

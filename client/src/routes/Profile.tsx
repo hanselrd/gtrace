@@ -24,7 +24,7 @@ let userQueryProps: UserQueryProps;
 let sendFriendRequestMutationProps: SendFriendRequestMutationProps;
 let handleFriendRequestMutationProps: HandleFriendRequestMutationProps;
 
-export type ProfileProps = RouteComponentProps<any> & {
+export type ProfileProps = RouteComponentProps<{ id: string }> & {
   currentUser: typeof currentUserQueryProps.data;
   user: typeof userQueryProps.data;
   sendFriendRequest: typeof sendFriendRequestMutationProps.mutate;
