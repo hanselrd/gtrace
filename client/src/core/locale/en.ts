@@ -36,5 +36,8 @@ export default {
   saveChanges: 'Save changes',
   verifyingCredentials: 'Verifying your credentials',
   createAnAccount: 'Create an account',
-  alreadyHaveAnAccount: 'I already have an account'
+  alreadyHaveAnAccount: 'I already have an account',
+  welcomeTo: 'Welcome to',
+  slogan: 'Meet like-minded gamers that share your passion',
+  joinUs: 'Join us'
 };

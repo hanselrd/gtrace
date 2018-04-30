@@ -41,6 +41,9 @@ export interface IStrings extends LocalizedStringsMethods {
   verifyingCredentials: string;
   createAnAccount: string;
   alreadyHaveAnAccount: string;
+  welcomeTo: string;
+  slogan: string;
+  joinUs: string;
 }
 
 const strings: IStrings = new LocalizedStrings({ en, es });

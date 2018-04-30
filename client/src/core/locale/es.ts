@@ -36,5 +36,8 @@ export default {
   saveChanges: 'Guardar cambios',
   verifyingCredentials: 'Verificando sus credenciales',
   createAnAccount: 'Crear una cuenta',
-  alreadyHaveAnAccount: 'Ya tengo una cuenta'
+  alreadyHaveAnAccount: 'Ya tengo una cuenta',
+  welcomeTo: 'Bienvenido a',
+  slogan: 'Conoce a jugadores con tu misma pasión',
+  joinUs: 'Únete'
 };

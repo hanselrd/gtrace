@@ -1,14 +1,22 @@
 import * as React from 'react';
-import { Container, Segment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { Button, Container, Header, Segment } from 'semantic-ui-react';
+import locale from '@app/core/locale';
 
-const image =
-  'https://i2.wp.com/newtelegraphonline.com/wp-content/uploads/2018/02/airport-runway.png?w=400&ssl=1';
+const logo = require('@app/images/logo.png');
 
 const Landing: React.SFC = () => (
   <div>
     <Segment inverted>
       <Container textAlign="center">
-        <img src={image} alt="landing" width={550} />
+        <Header as="h1" inverted>
+          {locale.welcomeTo} Trace
+        </Header>
+        <img src={logo} alt="landing" width={220} />
+        <p>{locale.slogan}</p>
+        <Button inverted size="massive" as={Link} to="/login">
+          {locale.joinUs}
+        </Button>
       </Container>
     </Segment>
   </div>
