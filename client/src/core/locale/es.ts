@@ -41,5 +41,6 @@ export default {
   slogan: 'Conoce a jugadores con tu misma pasión',
   joinUs: 'Únete',
   noNotificationsAtThisTime: 'No tienes notificaciones en este momento',
-  uploadProfilePicture: 'Subir Foto de Perfil'
+  uploadProfilePicture: 'Subir Foto de Perfil',
+  goBack: 'Regresar'
 };

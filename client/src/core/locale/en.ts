@@ -41,5 +41,6 @@ export default {
   slogan: 'Meet like-minded gamers that share your passion',
   joinUs: 'Join us',
   noNotificationsAtThisTime: 'No notifications at this time',
-  uploadProfilePicture: 'Upload Profile Picture'
+  uploadProfilePicture: 'Upload Profile Picture',
+  goBack: 'Go Back'
 };

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import { Button, Grid, Segment } from 'semantic-ui-react';
+import locale from '@app/core/locale';
 
 interface GameInfo {
   title: string;
@@ -56,7 +57,7 @@ const Game: React.SFC<GameProps> = ({ match }) => (
         <Grid.Row>
           <Grid.Column textAlign="center">
             <Button inverted fluid as={Link} to="/games">
-              Go Back
+              {locale.goBack}
             </Button>
           </Grid.Column>
         </Grid.Row>

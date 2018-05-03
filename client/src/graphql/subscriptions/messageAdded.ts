@@ -9,6 +9,7 @@ export default gql`
         id
         name
         role {
+          id
           abbreviation
           color
         }
@@ -26,6 +27,7 @@ export type MessageAddedSubscriptionData = {
       id: string;
       name: string;
       role: {
+        id: string;
         abbreviation: string;
         color: string;
       };
